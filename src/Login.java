@@ -72,6 +72,7 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cafe Ordering System");
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 formComponentHidden(evt);
@@ -199,7 +200,8 @@ public class Login extends javax.swing.JFrame {
         if (registeredAcc.get(edtUsername.getText()) != null
                 && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
             Menu menu = new Menu();
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            // comment out ko muna pansamantala
+//            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.setVisible(true);
             dispose();
         } else if (registeredAcc.get(edtUsername.getText()) == null) {
