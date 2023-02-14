@@ -199,8 +199,6 @@ public class Login extends javax.swing.JFrame {
         if (registeredAcc.get(edtUsername.getText()) != null
                 && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
             Menu menu = new Menu();
-            menu.dispose(); // Fixes the issue
-            menu.setUndecorated(true);
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.setVisible(true);
             dispose();
