@@ -197,11 +197,12 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         // login
+        Menu menu = new Menu();
         if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()){
+            menu.setVisible(false);
             JOptionPane.showMessageDialog(this, "Please enter your credentials!");
         } else if (registeredAcc.get(edtUsername.getText()) != null
                 && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
-            Menu menu = new Menu();
             menu.setVisible(true);
             dispose();
         } else if (registeredAcc.get(edtUsername.getText()) == null) {
