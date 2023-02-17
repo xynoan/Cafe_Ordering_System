@@ -240,7 +240,26 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+<<<<<<< HEAD
         loginFunction();
+=======
+        // TODO add your handling code here:
+        // login
+        Menu menu = new Menu();
+        if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()){
+            menu.setVisible(false);
+            JOptionPane.showMessageDialog(this, "Please enter your credentials!");
+        } else if (registeredAcc.get(edtUsername.getText()) != null
+                && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
+            menu.setVisible(true);
+            dispose();
+        } else if (registeredAcc.get(edtUsername.getText()) == null) {
+            JOptionPane.showMessageDialog(this, "Wrong username!");
+        } else if (registeredAcc.get(edtUsername.getText()) != null
+                && !edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
+            JOptionPane.showMessageDialog(this, "Wrong password!");
+        }
+>>>>>>> main
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
@@ -252,11 +271,38 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_edtPasswordActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+<<<<<<< HEAD
         signupFunction();
+=======
+        // TODO add your handling code here:
+        // sign-up
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+            
+            if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter your details!");
+            } else if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0){
+                stm.executeUpdate("insert into accounts values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
+                JOptionPane.showMessageDialog(this, "Account is added to the database!");
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+>>>>>>> main
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void edtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtUsernameActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_edtUsernameActionPerformed
 
     /**
