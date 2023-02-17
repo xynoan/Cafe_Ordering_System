@@ -233,12 +233,12 @@ public class Login extends javax.swing.JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
 
             Statement stm = con.createStatement();
-
-            if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
+            
+            if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter your details!");
+            } else if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0){
                 stm.executeUpdate("insert into accounts values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
                 JOptionPane.showMessageDialog(this, "Account is added to the database!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Please enter your details!");
             }
 
             con.close();
