@@ -72,6 +72,7 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cafe Ordering System");
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
                 formComponentHidden(evt);
@@ -123,9 +124,9 @@ public class Login extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Rockwell", 0, 10)); // NOI18N
         jLabel6.setText("Don't have an account?");
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png"))); // NOI18N
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/kopii.jpg"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/kopii.jpg"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,7 +200,6 @@ public class Login extends javax.swing.JFrame {
         if (registeredAcc.get(edtUsername.getText()) != null
                 && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
             Menu menu = new Menu();
-            menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.setVisible(true);
             dispose();
         } else if (registeredAcc.get(edtUsername.getText()) == null) {
