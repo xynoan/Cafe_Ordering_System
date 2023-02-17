@@ -197,7 +197,9 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         // login
-        if (registeredAcc.get(edtUsername.getText()) != null
+        if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please enter your credentials!");
+        } else if (registeredAcc.get(edtUsername.getText()) != null
                 && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
             Menu menu = new Menu();
             menu.setVisible(true);
@@ -246,7 +248,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void edtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtUsernameActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_edtUsernameActionPerformed
 
     /**
