@@ -38,10 +38,55 @@ public class Login extends javax.swing.JFrame {
 
             ResultSet result = stm.executeQuery("select * from accounts");
 
-            // checkpoint: if username and password is found in the database,
-            // let that user in, otherwise return an error
+            // put all registered accounts in MySQL to the HashTable.
             while (result.next()) {
                 registeredAcc.put(result.getString(1), result.getString(2));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void loginFunction() {
+        if (edtUsername.getText().isEmpty() && edtPassword.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter your credentials!");
+        } else if (registeredAcc.get(edtUsername.getText()) != null
+                && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
+            Menu menu = new Menu();
+            menu.setVisible(true);
+            dispose();
+        } else if (registeredAcc.get(edtUsername.getText()) == null) {
+            JOptionPane.showMessageDialog(this, "Wrong username!");
+        } else if (registeredAcc.get(edtUsername.getText()) != null
+                && !edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
+            JOptionPane.showMessageDialog(this, "Wrong password!");
+        }
+    }
+
+    public void signupFunction() {
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
+                if (registeredAcc.get(edtUsername.getText()) != null
+                        && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
+                    JOptionPane.showMessageDialog(this, "Account is already in the database!");
+                } else {
+                    stm.executeUpdate("insert into accounts values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
+                    JOptionPane.showMessageDialog(this, "Account is added to the database!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter your details!");
             }
 
             con.close();
@@ -195,19 +240,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        // login
-        if (registeredAcc.get(edtUsername.getText()) != null
-                && edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
-            Menu menu = new Menu();
-            menu.setVisible(true);
-            dispose();
-        } else if (registeredAcc.get(edtUsername.getText()) == null) {
-            JOptionPane.showMessageDialog(this, "Wrong username!");
-        } else if (registeredAcc.get(edtUsername.getText()) != null
-                && !edtPassword.getText().equals(registeredAcc.get(edtUsername.getText()))) {
-            JOptionPane.showMessageDialog(this, "Wrong password!");
-        }
+        loginFunction();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
@@ -219,30 +252,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_edtPasswordActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        // sign-up
-        // mysql connection
-        String url = "jdbc:mysql://localhost:3306/cafe";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            Connection con = DriverManager.getConnection(url, username, password);
-
-            Statement stm = con.createStatement();
-
-            if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
-                stm.executeUpdate("insert into accounts values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
-                JOptionPane.showMessageDialog(this, "Account is added to the database!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Please enter your details!");
-            }
-
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        signupFunction();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void edtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtUsernameActionPerformed
