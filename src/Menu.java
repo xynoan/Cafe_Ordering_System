@@ -3,13 +3,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.print.PrinterException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -18,7 +13,6 @@ import javax.swing.JOptionPane;
 public class Menu extends javax.swing.JFrame {
 
     private double total = 0.0;
-    private static Hashtable<String, Double> productNameAndPrice = new Hashtable<>();
     private int x = 0;
     private double tax = 0.0;
 
@@ -29,7 +23,7 @@ public class Menu extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
-    public void init() {
+    private void init() {
         setImage();
         setTime();
     }
@@ -55,7 +49,7 @@ public class Menu extends javax.swing.JFrame {
         Image img6 = icon6.getImage().getScaledInstance(jLabelimage6.getWidth(), jLabelimage6.getHeight(), Image.SCALE_SMOOTH);
         Image img7 = icon7.getImage().getScaledInstance(jLabelimage7.getWidth(), jLabelimage7.getHeight(), Image.SCALE_SMOOTH);
         Image img8 = icon8.getImage().getScaledInstance(jLabelimage8.getWidth(), jLabelimage8.getHeight(), Image.SCALE_SMOOTH);
-        Image img9 = icon9.getImage().getScaledInstance(jLabelimage9.getWidth(), jLabelimage9.getHeight(), Image.SCALE_SMOOTH);
+        Image img9 = icon9.getImage().getScaledInstance(jLabelimage8.getWidth(), jLabelimage8.getHeight(), Image.SCALE_SMOOTH);
 
         jLabelimage.setIcon(new ImageIcon(img));
         jLabelimage1.setIcon(new ImageIcon(img1));
@@ -91,7 +85,6 @@ public class Menu extends javax.swing.JFrame {
         jSpinner7.setValue(0);
         jSpinner8.setValue(0);
         jSpinner9.setValue(0);
-        jSpinner10.setValue(0);
         jTextFieldTax.setText("0.0");
         jTextFieldSubTotal.setText("0.0");
         jTextFieldTotal.setText("0.0");
@@ -105,7 +98,6 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox7.setSelected(false);
         jCheckBox8.setSelected(false);
         jCheckBox9.setSelected(false);
-        jCheckBox10.setSelected(false);
     }
 
     public void setTime() {
@@ -1334,24 +1326,6 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-        int qty = Integer.parseInt(jSpinner1.getValue().toString());
-        if (qtyIsZero(qty) && jCheckBox1.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
-            }
-            double price = qty * 3.0;
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
-            dudate();
-        } else {
-            jCheckBox1.setSelected(false);
-        }
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
-
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner2.getValue().toString());
@@ -1496,24 +1470,6 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox9ActionPerformed
 
-    private void jCheckBox10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox10ActionPerformed
-        // TODO add your handling code here:
-        int qty = Integer.parseInt(jSpinner10.getValue().toString());
-        if (qtyIsZero(qty) && jCheckBox10.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
-            }
-            double price = qty * 1.5;
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
-            dudate();
-        } else {
-            jCheckBox10.setSelected(false);
-        }
-    }//GEN-LAST:event_jCheckBox10ActionPerformed
-
     private void btnTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalActionPerformed
         // TODO add your handling code here:
         if (total == 0.0) {
@@ -1586,6 +1542,42 @@ public class Menu extends javax.swing.JFrame {
         fb.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnFeedbackActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        int qty = Integer.parseInt(jSpinner1.getValue().toString());
+        if (qtyIsZero(qty) && jCheckBox1.isSelected()) {
+            x++;
+            if (x == 1) {
+                moonbucks();
+            }
+            double price = qty * 3.0;
+            total += price;
+            getTax(total);
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            dudate();
+        } else {
+            jCheckBox1.setSelected(false);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jCheckBox10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox10ActionPerformed
+        // TODO add your handling code here:
+        int qty = Integer.parseInt(jSpinner10.getValue().toString());
+        if (qtyIsZero(qty) && jCheckBox10.isSelected()) {
+            x++;
+            if (x == 1) {
+                moonbucks();
+            }
+            double price = qty * 1.5;
+            total += price;
+            getTax(total);
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            dudate();
+        } else {
+            jCheckBox10.setSelected(false);
+        }
+    }//GEN-LAST:event_jCheckBox10ActionPerformed
     int xx, xy;
 
     /**
