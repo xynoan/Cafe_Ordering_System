@@ -222,43 +222,19 @@ public class LoginOption extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         // employee function
-        Login login = new Login();
-        if (Login.employeesAcc.get(username) != null
-                && password.equals(Login.employeesAcc.get(username))) {
-            Employee employee = new Employee();
-            employee.setVisible(true);
-            dispose();
-        } else if (Login.employeesAcc.get(username) == null) {
-            JOptionPane.showMessageDialog(this, "Wrong username!");
-            login.setVisible(true);
-            dispose();
-        } else if (Login.employeesAcc.get(username) != null
-                && !password.equals(Login.employeesAcc.get(username))) {
-            JOptionPane.showMessageDialog(this, "Wrong password!");
-            login.setVisible(true);
-            dispose();
-        }
+        Code.employeeCode = true;
+        Code code = new Code();
+        code.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         // manager function
-        Login login = new Login();
-        if (Login.managersAcc.get(username) != null
-                && password.equals(Login.managersAcc.get(username))) {
-            Manager manager = new Manager();
-            manager.setVisible(true);
-            dispose();
-        } else if (Login.managersAcc.get(username) == null) {
-            JOptionPane.showMessageDialog(this, "Wrong username!");
-            login.setVisible(true);
-            dispose();
-        } else if (Login.managersAcc.get(username) != null
-                && !password.equals(Login.managersAcc.get(username))) {
-            JOptionPane.showMessageDialog(this, "Wrong password!");
-            login.setVisible(true);
-            dispose();
-        }
+        Code.managerCode = true;
+        Code code = new Code();
+        code.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed

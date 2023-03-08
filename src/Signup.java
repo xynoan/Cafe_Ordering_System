@@ -23,6 +23,7 @@ public class Signup extends javax.swing.JFrame {
      */
     public Signup() {
         initComponents();
+        handleTitle();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
@@ -31,6 +32,16 @@ public class Signup extends javax.swing.JFrame {
         customer = false;
         employee = false;
         manager = false;
+    }
+
+    public void handleTitle() {
+        if (customer) {
+            setTitle("Sign up as customer");
+        } else if (employee) {
+            setTitle("Sign up as employee");
+        } else if (manager) {
+            setTitle("Sign up as manager");
+        }
     }
 
     public void signupFunction() {

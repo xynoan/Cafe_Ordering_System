@@ -1,11 +1,12 @@
 
-import java.sql.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -15,60 +16,39 @@ import javax.swing.*;
  *
  * @author admin
  */
-public class AddNewProduct extends javax.swing.JFrame {
+public class RemoveProduct extends javax.swing.JFrame {
+
     /**
      * Creates new form Feedback
      */
-    public AddNewProduct() {
+    public RemoveProduct() {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
-    public void restrictions() {
-        if (edtProductName.getText().isEmpty() && edtPrice.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the details!");
-        } else if (edtProductName.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the product name!");
-        } else if (edtPrice.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the price!");
-        } else {
-            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
-            Matcher matcher = pattern.matcher(edtProductName.getText());
-            if (matcher.matches()) {
-                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
-            }
-            boolean isDouble = false;
+    public void handleSubmit() {
+        if (productAlreadyExists(jTextField1.getText())) {
+            // mysql connection
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
             try {
-                Double.parseDouble(edtPrice.getText());
-                isDouble = true;
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                Connection con = DriverManager.getConnection(url, username, password);
+
+                Statement stm = con.createStatement();
+
+                stm.executeUpdate("insert into removedproducts values ('" + jTextField1.getText() + "')");
+                JOptionPane.showMessageDialog(this, "Product is now in queue for removal! Please wait for the manager's approval.");
+
+                con.close();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Please input valid price! (0.0, 1.0, 2.5)");
-                isDouble = false;
+                System.out.println(e);
             }
-
-            if (!matcher.matches() && isDouble) {
-                // mysql connection
-                String url = "jdbc:mysql://localhost:3306/cafe";
-                String username = "root";
-                String password = "";
-                try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-
-                    Connection con = DriverManager.getConnection(url, username, password);
-
-                    Statement stm = con.createStatement();
-                    if (!productAlreadyExists(edtProductName.getText())) {
-                        stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "')");
-                        JOptionPane.showMessageDialog(this, "Product is added to the database! Please wait for the manager to add it in the menu.");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Product already exists!");
-                    }
-                    con.close();
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            }
+        } else {
+            JOptionPane.showMessageDialog(this, "That product doesn't exist.");
         }
     }
 
@@ -130,17 +110,13 @@ public class AddNewProduct extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        edtProductName = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        stock = new javax.swing.JSpinner();
-        edtPrice = new javax.swing.JTextField();
+        jTextField1 = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Add New Product");
+        setTitle("Remove Product");
 
         jPanel1.setBackground(new java.awt.Color(153, 237, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 2));
@@ -152,62 +128,25 @@ public class AddNewProduct extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Product Name:");
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Price:");
-
-        edtProductName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                edtProductNameActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Stock:");
-
-        stock.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        stock.setModel(new javax.swing.SpinnerNumberModel(1, null, null, 1));
-
-        edtPrice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                edtPriceActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(edtProductName)
-                    .addComponent(stock, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(edtPrice))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(30, 30, 30)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(15, 15, 15)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(edtProductName, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(edtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(stock, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(153, 237, 204));
@@ -233,11 +172,11 @@ public class AddNewProduct extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(118, 118, 118)
+                .addGap(51, 51, 51)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(83, 83, 83)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(38, 38, 38))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +184,7 @@ public class AddNewProduct extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addGap(0, 18, Short.MAX_VALUE))
+                .addGap(0, 14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -253,21 +192,23 @@ public class AddNewProduct extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(120, 120, 120))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -278,7 +219,7 @@ public class AddNewProduct extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -286,7 +227,7 @@ public class AddNewProduct extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        restrictions();
+        handleSubmit();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -295,14 +236,6 @@ public class AddNewProduct extends javax.swing.JFrame {
         employeePanel.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void edtProductNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtProductNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_edtProductNameActionPerformed
-
-    private void edtPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtPriceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_edtPriceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -334,24 +267,20 @@ public class AddNewProduct extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddNewProduct().setVisible(true);
+                new RemoveProduct().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField edtPrice;
-    private javax.swing.JTextField edtProductName;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollBar jScrollBar2;
-    private javax.swing.JSpinner stock;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
