@@ -3,11 +3,17 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.print.PrinterException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class Menu extends javax.swing.JFrame {
@@ -26,6 +32,61 @@ public class Menu extends javax.swing.JFrame {
     private void init() {
         setImage();
         setTime();
+        setProductNameAndPrice();
+    }
+
+    public void setProductNameAndPrice() {
+        JLabel[] labelsPrice = {jLabel9, jLabel15, jLabel21, jLabel27, jLabel33, jLabel39, jLabel45, jLabel51, jLabel57, jLabel63};
+        ArrayList<String> pp = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from products");
+
+            while (result.next()) {
+                pp.add(result.getString(2));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
+            labelsPrice[i].setText("$"+pp.get(i));
+        }
+    }
+    
+    public Double getPriceDB(String productName) {
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        Double price = 0.0;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+            ResultSet result = stm.executeQuery("SELECT `Price` FROM `products` WHERE `Product Name`="+"'"+productName+"'");
+
+            while (result.next()) {
+                price = result.getDouble(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return price;
     }
 
     public void setImage() {
@@ -1334,7 +1395,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 5.0;
+            double price = qty * getPriceDB(jLabel14.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1352,7 +1413,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 4.0;
+            double price = qty * getPriceDB(jLabel20.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1370,7 +1431,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 2.0;
+            double price = qty * getPriceDB(jLabel26.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
@@ -1388,7 +1449,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 0.5;
+            double price = qty * getPriceDB(jLabel32.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1406,7 +1467,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 10.0;
+            double price = qty * getPriceDB(jLabel38.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1424,7 +1485,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 8.0;
+            double price = qty * getPriceDB(jLabel44.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1442,7 +1503,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 12.0;
+            double price = qty * getPriceDB(jLabel50.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
@@ -1460,7 +1521,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 15.0;
+            double price = qty * getPriceDB(jLabel56.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t" + String.format("%.2f", price) + "\n");
@@ -1551,7 +1612,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 3.0;
+            double price = qty * getPriceDB(jLabel8.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
@@ -1569,7 +1630,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
-            double price = qty * 1.5;
+            double price = qty * getPriceDB(jLabel62.getText());
             total += price;
             getTax(total);
             jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
