@@ -65,23 +65,6 @@ public class RemoveProduct extends javax.swing.JFrame {
 
             Statement stm = con.createStatement();
 
-            ResultSet result = stm.executeQuery("select * from addedproducts");
-
-            while (result.next()) {
-                al.add(result.getString(1).toLowerCase());
-            }
-
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            Connection con = DriverManager.getConnection(url, username, password);
-
-            Statement stm = con.createStatement();
-
             ResultSet result = stm.executeQuery("select * from products");
 
             while (result.next()) {

@@ -23,7 +23,7 @@ public class SignupOption extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
-    public void init() {
+    private void init() {
         setImage();
     }
 

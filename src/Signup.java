@@ -34,7 +34,7 @@ public class Signup extends javax.swing.JFrame {
         manager = false;
     }
 
-    public void handleTitle() {
+    private void handleTitle() {
         if (customer) {
             setTitle("Sign up as customer");
         } else if (employee) {
@@ -90,11 +90,10 @@ public class Signup extends javax.swing.JFrame {
                 Statement stm = con.createStatement();
 
                 if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
-                    if (Login.employeesAcc.get(edtUsername.getText()) != null
-                            && edtPassword.getText().equals(Login.employeesAcc.get(edtUsername.getText()))) {
+                    if (Login.employeesAcc.get(edtUsername.getText()) != null) {
                         JOptionPane.showMessageDialog(this, "Account is already in the database!");
                     } else {
-                        stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
+                        stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "', '" + "0" + "')");
                         JOptionPane.showMessageDialog(this, "Account is added to the database!");
                         resetChoice();
                         Login login = new Login();
