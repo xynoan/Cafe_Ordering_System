@@ -2,6 +2,24 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/UpdateSalary.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Login.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Code.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/RemoveEmployee.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Options/LoginOption.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/AddEmployee.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Customer/Feedback.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/ManageManagerCode.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Employee/UpdateProductPrice.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/CheckRatings.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Signup.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Employee/RemoveProduct.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/ManageEmployeeCode.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Employee/AddNewProduct.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Customer/Menu.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Manager/Manager.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/Cafe_Ordering_System/src/Employee/Employee.java</file>
+        </group>
     </open-files>
 </project-private>

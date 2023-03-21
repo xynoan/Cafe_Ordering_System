@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /*
@@ -27,56 +28,14 @@ public class RemoveProduct extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
-    public void handleSubmit() {
-        if (productAlreadyExists(jTextField1.getText())) {
-            // mysql connection
-            String url = "jdbc:mysql://localhost:3306/cafe";
-            String username = "root";
-            String password = "";
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-
-                Connection con = DriverManager.getConnection(url, username, password);
-
-                Statement stm = con.createStatement();
-
-                stm.executeUpdate("insert into removedproducts values ('" + jTextField1.getText() + "')");
-                JOptionPane.showMessageDialog(this, "Product is now in queue for removal! Please wait for the manager's approval.");
-
-                con.close();
-            } catch (Exception e) {
-                System.out.println(e);
+    public JLabel findLabelByValue(String value) {
+        JLabel[] labels = {Menu.jLabel8, Menu.jLabel14, Menu.jLabel20, Menu.jLabel26, Menu.jLabel32, Menu.jLabel38, Menu.jLabel44, Menu.jLabel50, Menu.jLabel56, Menu.jLabel62};
+        for (JLabel label : labels) {
+            if (label.getText().trim().equalsIgnoreCase(value.trim())) {
+                return label;
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "That product doesn't exist.");
         }
-    }
-
-    public boolean productAlreadyExists(String productName) {
-        ArrayList<String> al = new ArrayList<>();
-        // mysql connection
-        String url = "jdbc:mysql://localhost:3306/cafe";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            Connection con = DriverManager.getConnection(url, username, password);
-
-            Statement stm = con.createStatement();
-
-            ResultSet result = stm.executeQuery("select * from products");
-
-            while (result.next()) {
-                al.add(result.getString(1).toLowerCase());
-            }
-
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return al.contains(productName.toLowerCase());
+        return null;
     }
 
     /**
@@ -210,7 +169,9 @@ public class RemoveProduct extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        handleSubmit();
+        if (findLabelByValue(jTextField1.getText()) == null) {
+            JOptionPane.showMessageDialog(this, "That product does not exist!");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -264,6 +225,6 @@ public class RemoveProduct extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollBar jScrollBar2;
-    private javax.swing.JTextField jTextField1;
+    public static javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

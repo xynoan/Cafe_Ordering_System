@@ -1,6 +1,10 @@
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /*
@@ -37,6 +41,58 @@ public class Code extends javax.swing.JFrame {
         } else if (employeeCode) {
             setTitle("Code for employees");
         }
+    }
+    
+    public String getManagerCode() {
+        String code = "";
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select manager from code");
+
+            while (result.next()) {
+                code = result.getString(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return code;
+    }
+    
+    public String getEmployeeCode() {
+        String code = "";
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select employee from code");
+
+            while (result.next()) {
+                code = result.getString(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return code;
     }
 
     /**
@@ -173,7 +229,7 @@ public class Code extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if (jPasswordField1.getText().equalsIgnoreCase("test") && employeeCode) {
+        if (jPasswordField1.getText().equalsIgnoreCase(getEmployeeCode()) && employeeCode) {
             Login login = new Login();
             if (Login.employeesAcc.get(LoginOption.username) != null
                     && LoginOption.password.equals(Login.employeesAcc.get(LoginOption.username))) {
@@ -193,7 +249,7 @@ public class Code extends javax.swing.JFrame {
                 login.setVisible(true);
                 dispose();
             }
-        } else if (jPasswordField1.getText().equalsIgnoreCase("test2") && managerCode) {
+        } else if (jPasswordField1.getText().equalsIgnoreCase(getManagerCode()) && managerCode) {
             Login login = new Login();
             if (Login.managersAcc.get(LoginOption.username) != null
                     && LoginOption.password.equals(Login.managersAcc.get(LoginOption.username))) {

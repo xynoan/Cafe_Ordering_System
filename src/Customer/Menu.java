@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.awt.Container;
 
 public class Menu extends javax.swing.JFrame {
 
@@ -30,9 +32,28 @@ public class Menu extends javax.swing.JFrame {
     }
 
     private void init() {
+        removeProduct();
         setImage();
         setTime();
         setProductNameAndPrice();
+    }
+
+    public void removeProduct() {
+        if (RemoveProduct.jTextField1 != null && findLabelByValue(RemoveProduct.jTextField1.getText()) != null) {
+            JLabel label = findLabelByValue(RemoveProduct.jTextField1.getText());
+            JPanel parentPanel = (JPanel) label.getParent();
+            parentPanel.setVisible(false);
+        }
+    }
+
+    public JLabel findLabelByValue(String value) {
+        JLabel[] labels = {jLabel8, jLabel14, jLabel20, jLabel26, jLabel32, jLabel38, jLabel44, jLabel50, jLabel56, jLabel62};
+        for (JLabel label : labels) {
+            if (label.getText().trim().equalsIgnoreCase(value.trim())) {
+                return label;
+            }
+        }
+        return null;
     }
 
     public void setProductNameAndPrice() {
@@ -60,10 +81,10 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
         for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
-            labelsPrice[i].setText("$"+pp.get(i));
+            labelsPrice[i].setText("$" + pp.get(i));
         }
     }
-    
+
     public Double getPriceDB(String productName) {
         // mysql connection
         String url = "jdbc:mysql://localhost:3306/cafe";
@@ -76,7 +97,7 @@ public class Menu extends javax.swing.JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
 
             Statement stm = con.createStatement();
-            ResultSet result = stm.executeQuery("SELECT `Price` FROM `products` WHERE `Product Name`="+"'"+productName+"'");
+            ResultSet result = stm.executeQuery("SELECT `Price` FROM `products` WHERE `Product Name`=" + "'" + productName + "'");
 
             while (result.next()) {
                 price = result.getDouble(1);
@@ -1699,55 +1720,55 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
+    public static javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
+    public static javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
+    public static javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
+    public static javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
+    public static javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;
-    private javax.swing.JLabel jLabel44;
+    public static javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel50;
+    public static javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
     private javax.swing.JLabel jLabel55;
-    private javax.swing.JLabel jLabel56;
+    public static javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel57;
     private javax.swing.JLabel jLabel59;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
-    private javax.swing.JLabel jLabel62;
+    public static javax.swing.JLabel jLabel62;
     private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
+    public static javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelimage;
     private javax.swing.JLabel jLabelimage1;
@@ -1763,7 +1784,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
+    public static javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
