@@ -28,14 +28,31 @@ public class RemoveProduct extends javax.swing.JFrame {
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
-    public JLabel findLabelByValue(String value) {
-        JLabel[] labels = {Menu.jLabel8, Menu.jLabel14, Menu.jLabel20, Menu.jLabel26, Menu.jLabel32, Menu.jLabel38, Menu.jLabel44, Menu.jLabel50, Menu.jLabel56, Menu.jLabel62};
-        for (JLabel label : labels) {
-            if (label.getText().trim().equalsIgnoreCase(value.trim())) {
-                return label;
+    public boolean productAlreadyExists(String productName) {
+        ArrayList<String> al = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from products");
+
+            while (result.next()) {
+                al.add(result.getString(1).toLowerCase());
             }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        return null;
+
+        return al.contains(productName.toLowerCase());
     }
 
     /**
@@ -169,8 +186,27 @@ public class RemoveProduct extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if (findLabelByValue(jTextField1.getText()) == null) {
+        if (!productAlreadyExists(jTextField1.getText())) {
             JOptionPane.showMessageDialog(this, "That product does not exist!");
+        } else {
+            // mysql connection
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                Connection con = DriverManager.getConnection(url, username, password);
+
+                Statement stm = con.createStatement();
+
+                stm.executeUpdate("insert into removedproducts values ('" + jTextField1.getText() + "')");
+                JOptionPane.showMessageDialog(this, "Product removed!");
+
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

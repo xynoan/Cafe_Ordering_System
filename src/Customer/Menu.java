@@ -35,12 +35,33 @@ public class Menu extends javax.swing.JFrame {
         removeProduct();
         setImage();
         setTime();
-        setProductNameAndPrice();
     }
 
     public void removeProduct() {
-        if (RemoveProduct.jTextField1 != null && findLabelByValue(RemoveProduct.jTextField1.getText()) != null) {
-            JLabel label = findLabelByValue(RemoveProduct.jTextField1.getText());
+        ArrayList<String> al = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from removedproducts");
+
+            while (result.next()) {
+                al.add(result.getString(1));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        for (String product : al) {
+            JLabel label = findLabelByValue(product);
             JPanel parentPanel = (JPanel) label.getParent();
             parentPanel.setVisible(false);
         }
@@ -54,35 +75,6 @@ public class Menu extends javax.swing.JFrame {
             }
         }
         return null;
-    }
-
-    public void setProductNameAndPrice() {
-        JLabel[] labelsPrice = {jLabel9, jLabel15, jLabel21, jLabel27, jLabel33, jLabel39, jLabel45, jLabel51, jLabel57, jLabel63};
-        ArrayList<String> pp = new ArrayList<>();
-        // mysql connection
-        String url = "jdbc:mysql://localhost:3306/cafe";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            Connection con = DriverManager.getConnection(url, username, password);
-
-            Statement stm = con.createStatement();
-
-            ResultSet result = stm.executeQuery("select * from products");
-
-            while (result.next()) {
-                pp.add(result.getString(2));
-            }
-
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
-            labelsPrice[i].setText("$" + pp.get(i));
-        }
     }
 
     public Double getPriceDB(String productName) {

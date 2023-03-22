@@ -16,6 +16,7 @@ import javax.swing.*;
  * @author admin
  */
 public class AddNewProduct extends javax.swing.JFrame {
+
     /**
      * Creates new form Feedback
      */
@@ -23,6 +24,80 @@ public class AddNewProduct extends javax.swing.JFrame {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+    }
+
+    public void restrictions() {
+        if (edtProductName.getText().isEmpty() && edtPrice.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the details!");
+        } else if (edtProductName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the product name!");
+        } else if (edtPrice.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the price!");
+        } else {
+            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
+            Matcher matcher = pattern.matcher(edtProductName.getText());
+            if (matcher.matches()) {
+                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
+            }
+            boolean isDouble = false;
+            try {
+                Double.parseDouble(edtPrice.getText());
+                isDouble = true;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Please input valid price! (0.0, 1.0, 2.5)");
+                isDouble = false;
+            }
+
+            if (!matcher.matches() && isDouble) {
+                // mysql connection
+                String url = "jdbc:mysql://localhost:3306/cafe";
+                String username = "root";
+                String password = "";
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+
+                    Connection con = DriverManager.getConnection(url, username, password);
+
+                    Statement stm = con.createStatement();
+                    if (!productAlreadyExists(edtProductName.getText())) {
+                        stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "')");
+                        JOptionPane.showMessageDialog(this, "Product is added to the database! Please wait for the manager to add it in the menu.");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Product already exists!");
+                    }
+                    con.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
+    }
+
+    public boolean productAlreadyExists(String productName) {
+        ArrayList<String> al = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from products");
+
+            while (result.next()) {
+                al.add(result.getString(1).toLowerCase());
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return al.contains(productName.toLowerCase());
     }
 
     /**
@@ -195,6 +270,7 @@ public class AddNewProduct extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        restrictions();
         System.out.println("Strawberry cake should appear");
     }//GEN-LAST:event_jButton1ActionPerformed
 
