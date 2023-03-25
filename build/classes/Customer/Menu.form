@@ -307,7 +307,7 @@
                               <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -346,7 +346,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Cold Coffee"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -357,7 +356,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$3.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner1">
@@ -450,7 +448,7 @@
                               <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox2" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -489,7 +487,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Cappuccino Coffee"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -500,7 +497,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$5.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner2">
@@ -584,7 +580,7 @@
                               <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox3" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -623,7 +619,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Chocolate Coffee"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -634,7 +629,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$4.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner3">
@@ -718,7 +712,7 @@
                               <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox4" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="62" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -757,7 +751,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Green Tea"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -768,7 +761,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$2.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner4">
@@ -902,7 +894,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$0.5"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner5">
@@ -986,7 +977,7 @@
                               <Component id="jLabel37" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox6" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="78" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1025,7 +1016,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Strawberry Cake"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1036,7 +1026,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$10.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner6">
@@ -1120,7 +1109,7 @@
                               <Component id="jLabel43" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox7" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="78" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1159,7 +1148,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Chocolate Cake"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1170,7 +1158,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$8.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner7">
@@ -1254,7 +1241,7 @@
                               <Component id="jLabel49" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox8" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="78" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1293,7 +1280,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Fruits Cake"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1304,7 +1290,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$12.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner8">
@@ -1388,7 +1373,7 @@
                               <Component id="jLabel55" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox9" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="78" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1427,7 +1412,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Rainbow Cake"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1438,7 +1422,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$15.0"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner9">
@@ -1525,7 +1508,7 @@
                               <Component id="jLabel61" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBox10" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="58" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="78" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1564,7 +1547,6 @@
                       <Font name="Times New Roman" size="16" style="1"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Coca Cola"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1575,7 +1557,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Times New Roman" size="14" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="$1.5"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSpinner10">

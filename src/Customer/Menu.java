@@ -16,7 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.Container;
 
 public class Menu extends javax.swing.JFrame {
 
@@ -32,9 +31,146 @@ public class Menu extends javax.swing.JFrame {
     }
 
     private void init() {
+        setProductNameAndPriceAndImage();
+        addProduct();
         removeProduct();
-        setImage();
         setTime();
+    }
+
+    public void addProduct() {
+        if (isThereProductToAdd() && isThereVacant()) {
+            ArrayList<String> al = new ArrayList<>();
+            // mysql connection
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                Connection con = DriverManager.getConnection(url, username, password);
+
+                Statement stm = con.createStatement();
+
+                ResultSet result = stm.executeQuery("select * from removedproducts");
+
+                while (result.next()) {
+                    al.add(result.getString(1));
+                }
+
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection(url, username, password);
+                Statement stm = con.createStatement();
+                stm.executeUpdate("update products set `Product Name`=" + "'" + getProductToAdd() + "' where `Product Name`=" + "'" + al.get(0) + "'");
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection(url, username, password);
+                Statement stm = con.createStatement();
+                stm.executeUpdate("DELETE from removedproducts where `Product Name`=" + "'" + al.get(0) + "'");
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection con = DriverManager.getConnection(url, username, password);
+                Statement stm = con.createStatement();
+                stm.executeUpdate("DELETE from addedproducts where `Product Name`=" + "'" + getProductToAdd() + "'");
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        }
+    }
+
+    public boolean isThereVacant() {
+        boolean vacant = false;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from removedproducts");
+
+            if (result.next()) {
+                vacant = true;
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return vacant;
+    }
+
+    public boolean isThereProductToAdd() {
+        boolean exists = false;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from addedproducts");
+
+            if (result.next()) {
+                exists = true;
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return exists;
+    }
+
+    public String getProductToAdd() {
+        boolean exists = false;
+        String newProductName = "";
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from addedproducts");
+
+            if (result.next()) {
+                exists = true;
+                newProductName = result.getString(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return newProductName;
     }
 
     public void removeProduct() {
@@ -77,6 +213,49 @@ public class Menu extends javax.swing.JFrame {
         return null;
     }
 
+    public void setProductNameAndPriceAndImage() {
+        JLabel[] labels = {jLabel8, jLabel14, jLabel20, jLabel26, jLabel32, jLabel38, jLabel44, jLabel50, jLabel56, jLabel62};
+        JLabel[] labelsPrice = {jLabel9, jLabel15, jLabel21, jLabel27, jLabel33, jLabel39, jLabel45, jLabel51, jLabel57, jLabel63};
+        JLabel[] labelsImage = {jLabelimage, jLabelimage1, jLabelimage2, jLabelimage3, jLabelimage4, jLabelimage5, jLabelimage6, jLabelimage7, jLabelimage8, jLabelimage9};
+        ArrayList<String> pp = new ArrayList<>();
+        ArrayList<String> pn = new ArrayList<>();
+        ArrayList<String> pi = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from products");
+
+            while (result.next()) {
+                pi.add(result.getString(4));
+                pp.add(result.getString(2));
+                pn.add(result.getString(1));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
+            labelsPrice[i].setText("$" + pp.get(i));
+        }
+        for (int i = 0; i < pn.size() && i < labels.length; i++) {
+            labels[i].setText(pn.get(i));
+        }
+        for (int i = 0; i < pi.size() && i < labelsImage.length; i++) {
+            ImageIcon icon = new ImageIcon(getClass().getResource(pi.get(i)));
+            Image img = icon.getImage().getScaledInstance(labelsImage[i].getWidth(), labelsImage[i].getHeight(), Image.SCALE_SMOOTH);
+            labelsImage[i].setIcon(new ImageIcon(img));
+        }
+    }
+
     public Double getPriceDB(String productName) {
         // mysql connection
         String url = "jdbc:mysql://localhost:3306/cafe";
@@ -100,41 +279,6 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
         return price;
-    }
-
-    public void setImage() {
-        ImageIcon icon = new ImageIcon(getClass().getResource("/images/coldcoffee.jpg"));
-        ImageIcon icon1 = new ImageIcon(getClass().getResource("/images/cappuccinocoffee.jpg"));
-        ImageIcon icon2 = new ImageIcon(getClass().getResource("/images/chocolatecoffee.jpg"));
-        ImageIcon icon3 = new ImageIcon(getClass().getResource("/images/greentea.jpg"));
-        ImageIcon icon4 = new ImageIcon(getClass().getResource("/images/mineralswater.png"));
-        ImageIcon icon5 = new ImageIcon(getClass().getResource("/images/strawberrycake.jpg"));
-        ImageIcon icon6 = new ImageIcon(getClass().getResource("/images/chocolatecake.jpg"));
-        ImageIcon icon7 = new ImageIcon(getClass().getResource("/images/fruitscake.jpg"));
-        ImageIcon icon8 = new ImageIcon(getClass().getResource("/images/rainbow.jpg"));
-        ImageIcon icon9 = new ImageIcon(getClass().getResource("/images/coke.jpg"));
-
-        Image img = icon.getImage().getScaledInstance(jLabelimage.getWidth(), jLabelimage.getHeight(), Image.SCALE_SMOOTH);
-        Image img1 = icon1.getImage().getScaledInstance(jLabelimage1.getWidth(), jLabelimage1.getHeight(), Image.SCALE_SMOOTH);
-        Image img2 = icon2.getImage().getScaledInstance(jLabelimage2.getWidth(), jLabelimage2.getHeight(), Image.SCALE_SMOOTH);
-        Image img3 = icon3.getImage().getScaledInstance(jLabelimage3.getWidth(), jLabelimage3.getHeight(), Image.SCALE_SMOOTH);
-        Image img4 = icon4.getImage().getScaledInstance(jLabelimage4.getWidth(), jLabelimage4.getHeight(), Image.SCALE_SMOOTH);
-        Image img5 = icon5.getImage().getScaledInstance(jLabelimage5.getWidth(), jLabelimage5.getHeight(), Image.SCALE_SMOOTH);
-        Image img6 = icon6.getImage().getScaledInstance(jLabelimage6.getWidth(), jLabelimage6.getHeight(), Image.SCALE_SMOOTH);
-        Image img7 = icon7.getImage().getScaledInstance(jLabelimage7.getWidth(), jLabelimage7.getHeight(), Image.SCALE_SMOOTH);
-        Image img8 = icon8.getImage().getScaledInstance(jLabelimage8.getWidth(), jLabelimage8.getHeight(), Image.SCALE_SMOOTH);
-        Image img9 = icon9.getImage().getScaledInstance(jLabelimage8.getWidth(), jLabelimage8.getHeight(), Image.SCALE_SMOOTH);
-
-        jLabelimage.setIcon(new ImageIcon(img));
-        jLabelimage1.setIcon(new ImageIcon(img1));
-        jLabelimage2.setIcon(new ImageIcon(img2));
-        jLabelimage3.setIcon(new ImageIcon(img3));
-        jLabelimage4.setIcon(new ImageIcon(img4));
-        jLabelimage5.setIcon(new ImageIcon(img5));
-        jLabelimage6.setIcon(new ImageIcon(img6));
-        jLabelimage7.setIcon(new ImageIcon(img7));
-        jLabelimage8.setIcon(new ImageIcon(img8));
-        jLabelimage9.setIcon(new ImageIcon(img9));
     }
 
     public boolean qtyIsZero(int qty) {
@@ -413,10 +557,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Cold Coffee");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel9.setText("$3.0");
 
         jSpinner1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -468,7 +610,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jCheckBox1))
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
@@ -490,10 +632,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Cappuccino Coffee");
 
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel15.setText("$5.0");
 
         jSpinner2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner2.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -545,7 +685,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(jCheckBox2))
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         jPanel6.setBackground(new java.awt.Color(250, 250, 250));
@@ -563,10 +703,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setText("Chocolate Coffee");
 
         jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel21.setText("$4.0");
 
         jSpinner3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner3.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -618,7 +756,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(jCheckBox3))
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         jPanel7.setBackground(new java.awt.Color(250, 250, 250));
@@ -636,10 +774,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel26.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel26.setText("Green Tea");
 
         jLabel27.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel27.setText("$2.0");
 
         jSpinner4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner4.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -691,7 +827,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
                     .addComponent(jCheckBox4))
-                .addGap(0, 42, Short.MAX_VALUE))
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(250, 250, 250));
@@ -712,7 +848,6 @@ public class Menu extends javax.swing.JFrame {
         jLabel32.setText("Mineral Water");
 
         jLabel33.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel33.setText("$0.5");
 
         jSpinner5.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner5.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -782,10 +917,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel38.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel38.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel38.setText("Strawberry Cake");
 
         jLabel39.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel39.setText("$10.0");
 
         jSpinner6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner6.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -837,7 +970,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel37)
                     .addComponent(jCheckBox6))
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 78, Short.MAX_VALUE))
         );
 
         jPanel10.setBackground(new java.awt.Color(250, 250, 250));
@@ -855,10 +988,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel44.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel44.setText("Chocolate Cake");
 
         jLabel45.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel45.setText("$8.0");
 
         jSpinner7.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner7.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -910,7 +1041,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel43)
                     .addComponent(jCheckBox7))
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 78, Short.MAX_VALUE))
         );
 
         jPanel11.setBackground(new java.awt.Color(250, 250, 250));
@@ -928,10 +1059,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel50.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel50.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel50.setText("Fruits Cake");
 
         jLabel51.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel51.setText("$12.0");
 
         jSpinner8.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner8.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -983,7 +1112,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel49)
                     .addComponent(jCheckBox8))
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 78, Short.MAX_VALUE))
         );
 
         jPanel12.setBackground(new java.awt.Color(250, 250, 250));
@@ -1001,10 +1130,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel56.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel56.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel56.setText("Rainbow Cake");
 
         jLabel57.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel57.setText("$15.0");
 
         jSpinner9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner9.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -1056,7 +1183,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel55)
                     .addComponent(jCheckBox9))
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 78, Short.MAX_VALUE))
         );
 
         jPanel13.setBackground(new java.awt.Color(250, 250, 250));
@@ -1074,10 +1201,8 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel62.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel62.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel62.setText("Coca Cola");
 
         jLabel63.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel63.setText("$1.5");
 
         jSpinner10.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jSpinner10.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
@@ -1129,7 +1254,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel61)
                     .addComponent(jCheckBox10))
-                .addGap(0, 58, Short.MAX_VALUE))
+                .addGap(0, 78, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

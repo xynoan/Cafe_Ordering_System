@@ -60,8 +60,12 @@ public class AddNewProduct extends javax.swing.JFrame {
 
                     Statement stm = con.createStatement();
                     if (!productAlreadyExists(edtProductName.getText())) {
-                        stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "')");
-                        JOptionPane.showMessageDialog(this, "Product is added to the database! Please wait for the manager to add it in the menu.");
+                        if (vacantJPanel()) {
+                            stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "')");
+                            JOptionPane.showMessageDialog(this, "Product is added!");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "There's no vacant! Please remove at least 1 product first!");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "Product already exists!");
                     }
@@ -71,6 +75,33 @@ public class AddNewProduct extends javax.swing.JFrame {
                 }
             }
         }
+    }
+
+    public boolean vacantJPanel() {
+        boolean vacant = false;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from removedproducts");
+
+            if (result.next()) {
+                vacant = true;
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return vacant;
     }
 
     public boolean productAlreadyExists(String productName) {
@@ -271,7 +302,6 @@ public class AddNewProduct extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         restrictions();
-        System.out.println("Strawberry cake should appear");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
