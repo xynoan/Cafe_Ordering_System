@@ -31,8 +31,8 @@ public class Menu extends javax.swing.JFrame {
     }
 
     private void init() {
-        setProductNameAndPriceAndImage();
         addProduct();
+        setProductNameAndPriceAndImage();
         removeProduct();
         setTime();
     }
@@ -65,7 +65,7 @@ public class Menu extends javax.swing.JFrame {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, username, password);
                 Statement stm = con.createStatement();
-                stm.executeUpdate("update products set `Product Name`=" + "'" + getProductToAdd() + "' where `Product Name`=" + "'" + al.get(0) + "'");
+                stm.executeUpdate("update products set `Product Name`=" + "'" + getProductToAdd() + "', `Price`="+ "'"+ getPriceToAdd()+ "', `Stock`="+"'"+getStockToAdd()+"', `Image`="+"'"+getImageToAdd()+"' where `Product Name`=" + "'" + al.get(0) + "'");
                 con.close();
             } catch (Exception e) {
                 System.out.println(e);
@@ -146,7 +146,6 @@ public class Menu extends javax.swing.JFrame {
     }
 
     public String getProductToAdd() {
-        boolean exists = false;
         String newProductName = "";
         // mysql connection
         String url = "jdbc:mysql://localhost:3306/cafe";
@@ -162,7 +161,6 @@ public class Menu extends javax.swing.JFrame {
             ResultSet result = stm.executeQuery("select * from addedproducts");
 
             if (result.next()) {
-                exists = true;
                 newProductName = result.getString(1);
             }
 
@@ -171,6 +169,84 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
         return newProductName;
+    }
+    
+    public double getPriceToAdd() {
+        double newPrice = 0.0;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from addedproducts");
+
+            if (result.next()) {
+                newPrice = result.getDouble(2);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return newPrice;
+    }
+    
+    public int getStockToAdd() {
+        int newStock = 0;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from addedproducts");
+
+            if (result.next()) {
+                newStock = result.getInt(3);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return newStock;
+    }
+    
+    public String getImageToAdd() {
+        String newImage = "";
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from addedproducts");
+
+            if (result.next()) {
+                newImage = result.getString(4);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return newImage;
     }
 
     public void removeProduct() {
@@ -243,11 +319,11 @@ public class Menu extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e);
         }
-        for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
-            labelsPrice[i].setText("$" + pp.get(i));
-        }
         for (int i = 0; i < pn.size() && i < labels.length; i++) {
             labels[i].setText(pn.get(i));
+        }
+        for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
+            labelsPrice[i].setText("$" + pp.get(i));
         }
         for (int i = 0; i < pi.size() && i < labelsImage.length; i++) {
             ImageIcon icon = new ImageIcon(getClass().getResource(pi.get(i)));
@@ -1554,7 +1630,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel20.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox3.setSelected(false);
@@ -1572,7 +1648,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel26.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox4.setSelected(false);
@@ -1626,7 +1702,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel44.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox7.setSelected(false);
@@ -1644,7 +1720,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel50.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox8.setSelected(false);
@@ -1662,7 +1738,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel56.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox9.setSelected(false);
@@ -1753,7 +1829,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel8.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox1.setSelected(false);

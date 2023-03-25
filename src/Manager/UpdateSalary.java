@@ -1,3 +1,4 @@
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -49,8 +50,10 @@ public class UpdateSalary extends javax.swing.JFrame {
                 if (edtUsername.getText().length() > 0) {
                     if (Login.employeesAcc.get(edtUsername.getText()) == null) {
                         JOptionPane.showMessageDialog(this, "That user is not an employee!");
+                    } else if (Integer.parseInt(edtSalary.getText()) < 0) {
+                        JOptionPane.showMessageDialog(this, "You cannot input negative numbers!");
                     } else {
-                        stm.executeUpdate("UPDATE `employees` SET `salary`="+"'"+edtSalary.getText()+"'"+" WHERE `username`="+"'"+edtUsername.getText()+"'");
+                        stm.executeUpdate("UPDATE `employees` SET `salary`=" + "'" + edtSalary.getText() + "'" + " WHERE `username`=" + "'" + edtUsername.getText() + "'");
                         JOptionPane.showMessageDialog(this, "Employee's salary is updated!");
                     }
                 } else {
