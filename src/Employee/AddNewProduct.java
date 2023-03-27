@@ -49,8 +49,11 @@ public class AddNewProduct extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please input valid price! (0.0, 1.0, 2.5)");
                 isDouble = false;
             }
-
-            if (!matcher.matches() && isDouble) {
+            Menu menu = new Menu();
+            if (!menu.validateImage(edtImage.getText())) {
+                JOptionPane.showMessageDialog(this, "That image location does not exist!");
+            }
+            if (!matcher.matches() && isDouble && menu.validateImage(edtImage.getText())) {
                 // mysql connection
                 String url = "jdbc:mysql://localhost:3306/cafe";
                 String username = "root";
@@ -63,7 +66,7 @@ public class AddNewProduct extends javax.swing.JFrame {
                     Statement stm = con.createStatement();
                     if (!productAlreadyExists(edtProductName.getText()) || productAlreadyRemoved(edtProductName.getText())) {
                         if (vacantJPanel()) {
-                            stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" +edtPrice.getText() + "', '" +stock.getValue() + "', '" + edtImage.getText() +"')");
+                            stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "', '" + edtImage.getText() + "')");
                             JOptionPane.showMessageDialog(this, "Product is added!");
                         } else {
                             JOptionPane.showMessageDialog(this, "There's no vacant! Please remove at least 1 product first!");

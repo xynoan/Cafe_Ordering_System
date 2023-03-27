@@ -65,7 +65,7 @@ public class Menu extends javax.swing.JFrame {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, username, password);
                 Statement stm = con.createStatement();
-                stm.executeUpdate("update products set `Product Name`=" + "'" + getProductToAdd() + "', `Price`="+ "'"+ getPriceToAdd()+ "', `Stock`="+"'"+getStockToAdd()+"', `Image`="+"'"+getImageToAdd()+"' where `Product Name`=" + "'" + al.get(0) + "'");
+                stm.executeUpdate("update products set `Product Name`=" + "'" + getProductToAdd() + "', `Price`=" + "'" + getPriceToAdd() + "', `Stock`=" + "'" + getStockToAdd() + "', `Image`=" + "'" + getImageToAdd() + "' where `Product Name`=" + "'" + al.get(0) + "'");
                 con.close();
             } catch (Exception e) {
                 System.out.println(e);
@@ -170,7 +170,7 @@ public class Menu extends javax.swing.JFrame {
         }
         return newProductName;
     }
-    
+
     public double getPriceToAdd() {
         double newPrice = 0.0;
         // mysql connection
@@ -196,7 +196,7 @@ public class Menu extends javax.swing.JFrame {
         }
         return newPrice;
     }
-    
+
     public int getStockToAdd() {
         int newStock = 0;
         // mysql connection
@@ -222,7 +222,7 @@ public class Menu extends javax.swing.JFrame {
         }
         return newStock;
     }
-    
+
     public String getImageToAdd() {
         String newImage = "";
         // mysql connection
@@ -355,6 +355,16 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
         return price;
+    }
+
+    public boolean validateImage(String image) {
+        try {
+            new ImageIcon(getClass().getResource(image));
+        } catch (Exception e) {
+            return false;
+//            return "That image location does not exist!";
+        }
+        return true;
     }
 
     public boolean qtyIsZero(int qty) {
