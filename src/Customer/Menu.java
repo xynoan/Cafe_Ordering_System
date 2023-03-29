@@ -460,6 +460,45 @@ public class Menu extends javax.swing.JFrame {
         jTextFieldTotal.setText(String.valueOf(String.format("%.2f", (total + tax))));
     }
 
+    public void decrementStocks(String productName, int qty) {
+        // mysql connection
+        int currentStock = 0;
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        // get current stock of product first in database
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select stock from products where `Product Name`=" + "'" + productName + "'");
+
+            while (result.next()) {
+                currentStock = result.getInt(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        // then decrement based on the current stock and quantity.
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+            stm.executeUpdate("update products set `Stock`=" + "'" + (currentStock - qty) + "' where `Product Name`=" + "'" + productName + "'");
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1619,6 +1658,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel14.getText(), qty);
             double price = qty * getPriceDB(jLabel14.getText());
             total += price;
             getTax(total);
@@ -1637,6 +1677,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel20.getText(), qty);
             double price = qty * getPriceDB(jLabel20.getText());
             total += price;
             getTax(total);
@@ -1655,6 +1696,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel26.getText(), qty);
             double price = qty * getPriceDB(jLabel26.getText());
             total += price;
             getTax(total);
@@ -1673,6 +1715,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel32.getText(), qty);
             double price = qty * getPriceDB(jLabel32.getText());
             total += price;
             getTax(total);
@@ -1691,6 +1734,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel38.getText(), qty);
             double price = qty * getPriceDB(jLabel38.getText());
             total += price;
             getTax(total);
@@ -1709,6 +1753,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel44.getText(), qty);
             double price = qty * getPriceDB(jLabel44.getText());
             total += price;
             getTax(total);
@@ -1727,6 +1772,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel50.getText(), qty);
             double price = qty * getPriceDB(jLabel50.getText());
             total += price;
             getTax(total);
@@ -1745,6 +1791,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel56.getText(), qty);
             double price = qty * getPriceDB(jLabel56.getText());
             total += price;
             getTax(total);
@@ -1836,6 +1883,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel8.getText(), qty);
             double price = qty * getPriceDB(jLabel8.getText());
             total += price;
             getTax(total);
@@ -1854,6 +1902,7 @@ public class Menu extends javax.swing.JFrame {
             if (x == 1) {
                 moonbucks();
             }
+            decrementStocks(jLabel62.getText(), qty);
             double price = qty * getPriceDB(jLabel62.getText());
             total += price;
             getTax(total);
