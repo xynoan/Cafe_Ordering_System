@@ -36,11 +36,6 @@ public class AddNewProduct extends javax.swing.JFrame {
         } else if (edtImage.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the image location!");
         } else {
-            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
-            Matcher matcher = pattern.matcher(edtProductName.getText());
-            if (matcher.matches()) {
-                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
-            }
             boolean isDouble = false;
             try {
                 Double.parseDouble(edtPrice.getText());
@@ -53,7 +48,7 @@ public class AddNewProduct extends javax.swing.JFrame {
             if (!menu.validateImage(edtImage.getText())) {
                 JOptionPane.showMessageDialog(this, "That image location does not exist!");
             }
-            if (!matcher.matches() && isDouble && menu.validateImage(edtImage.getText())) {
+            if (isDouble && menu.validateImage(edtImage.getText())) {
                 // mysql connection
                 String url = "jdbc:mysql://localhost:3306/cafe";
                 String username = "root";
