@@ -85,7 +85,7 @@ public class AddNewProduct extends javax.swing.JFrame {
     public boolean vacantJPanel() {
         boolean vacant = false;
         // mysql connection
-        String url = "jdbc:mysql://localhost:3306/cafe";
+        String url = "jdbc:mysql://localhost/cafe";
         String username = "root";
         String password = "";
         try {

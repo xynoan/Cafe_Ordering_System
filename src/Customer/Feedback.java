@@ -111,7 +111,7 @@ public class Feedback extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(153, 237, 204));
 
-        jLabel1.setBackground(new java.awt.Color(153, 237, 204));
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Feedback");
