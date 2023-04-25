@@ -33,6 +33,8 @@ public class AddNewProduct extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please enter the product name!");
         } else if (edtPrice.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the price!");
+        } else if (edtImage.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the image location!");
         } else {
             Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
             Matcher matcher = pattern.matcher(edtProductName.getText());
@@ -47,43 +49,43 @@ public class AddNewProduct extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Please input valid price! (0.0, 1.0, 2.5)");
                 isDouble = false;
             }
-//            Menu menu = new Menu();
-//            if (!menu.validateImage(edtImage.getText())) {
-//                JOptionPane.showMessageDialog(this, "That image location does not exist!");
-//            }
-//            if (!matcher.matches() && isDouble && menu.validateImage(edtImage.getText())) {
-//                // mysql connection
-//                String url = "jdbc:mysql://localhost:3306/cafe";
-//                String username = "root";
-//                String password = "";
-//                try {
-//                    Class.forName("com.mysql.cj.jdbc.Driver");
-//
-//                    Connection con = DriverManager.getConnection(url, username, password);
-//
-//                    Statement stm = con.createStatement();
-//                    if (!productAlreadyExists(edtProductName.getText()) || productAlreadyRemoved(edtProductName.getText())) {
-//                        if (vacantJPanel()) {
-//                            stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "', '" + edtImage.getText() + "')");
-//                            JOptionPane.showMessageDialog(this, "Product is added!");
-//                        } else {
-//                            JOptionPane.showMessageDialog(this, "There's no vacant! Please remove at least 1 product first!");
-//                        }
-//                    } else {
-//                        JOptionPane.showMessageDialog(this, "Product already exists!");
-//                    }
-//                    con.close();
-//                } catch (Exception e) {
-//                    System.out.println(e);
-//                }
-//            }
+            Menu menu = new Menu();
+            if (!menu.validateImage(edtImage.getText())) {
+                JOptionPane.showMessageDialog(this, "That image location does not exist!");
+            }
+            if (!matcher.matches() && isDouble && menu.validateImage(edtImage.getText())) {
+                // mysql connection
+                String url = "jdbc:mysql://localhost:3306/cafe";
+                String username = "root";
+                String password = "";
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+
+                    Connection con = DriverManager.getConnection(url, username, password);
+
+                    Statement stm = con.createStatement();
+                    if (!productAlreadyExists(edtProductName.getText()) || productAlreadyRemoved(edtProductName.getText())) {
+                        if (vacantJPanel()) {
+                            stm.executeUpdate("insert into addedproducts values ('" + edtProductName.getText() + "', '" + edtPrice.getText() + "', '" + stock.getValue() + "', '" + edtImage.getText() + "')");
+                            JOptionPane.showMessageDialog(this, "Product is added!");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "There's no vacant! Please remove at least 1 product first!");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Product already exists!");
+                    }
+                    con.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
         }
     }
 
     public boolean vacantJPanel() {
         boolean vacant = false;
         // mysql connection
-        String url = "jdbc:mysql://localhost:3306/cafe";
+        String url = "jdbc:mysql://localhost/cafe";
         String username = "root";
         String password = "";
         try {
@@ -181,7 +183,8 @@ public class AddNewProduct extends javax.swing.JFrame {
         stock = new javax.swing.JSpinner();
         edtPrice = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        edtImage = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -226,32 +229,43 @@ public class AddNewProduct extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Image Location:");
 
-        jButton3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jButton3.setText("Select a File");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        edtImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                edtImageActionPerformed(evt);
             }
         });
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("(/images/7up.jpg)");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(jLabel6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(edtProductName)
-                    .addComponent(stock, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
-                    .addComponent(edtPrice)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(edtImage)
+                        .addGap(15, 15, 15))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(edtProductName)
+                            .addComponent(stock, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(edtPrice))
+                        .addContainerGap(15, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -270,9 +284,11 @@ public class AddNewProduct extends javax.swing.JFrame {
                     .addComponent(stock, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addComponent(edtImage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(153, 237, 204));
@@ -331,7 +347,7 @@ public class AddNewProduct extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80))
+                .addGap(54, 54, 54))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -342,7 +358,7 @@ public class AddNewProduct extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, Short.MAX_VALUE)
         );
 
         pack();
@@ -368,12 +384,9 @@ public class AddNewProduct extends javax.swing.JFrame {
         restrictions();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void edtImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtImageActionPerformed
         // TODO add your handling code here:
-        if (evt.getSource()==jButton3) {
-            
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_edtImageActionPerformed
 
     /**
      * @param args the command line arguments
@@ -411,15 +424,16 @@ public class AddNewProduct extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField edtImage;
     private javax.swing.JTextField edtPrice;
     private javax.swing.JTextField edtProductName;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
