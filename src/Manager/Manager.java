@@ -34,7 +34,7 @@ public class Manager extends javax.swing.JFrame {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
-    
+
     public void init() {
         sidebarIconSet();
         viewEmployeeTab();
@@ -42,9 +42,9 @@ public class Manager extends javax.swing.JFrame {
         userRatingTable();
         setTime();
     }
-    
+
     public void viewEmployeeTab() {
-        DefaultTableModel defaultTableModel = (DefaultTableModel)employeeTable.getModel();
+        DefaultTableModel defaultTableModel = (DefaultTableModel) employeeTable.getModel();
         defaultTableModel.setRowCount(0);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -52,61 +52,50 @@ public class Manager extends javax.swing.JFrame {
             Statement statement = connect.createStatement();
             ResultSet result = statement.executeQuery("SELECT * FROM employees");
             while (result.next()) {
-                Object[] employeeRow = {result.getString("username"), result.getString("salary")};
+                Object[] employeeRow = {result.getString("username")};
                 defaultTableModel.addRow(employeeRow);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    
+
     public void defaultVisibility() {
         viewEmployee.setVisible(true);
         checkRating.setVisible(false);
         securityCodeEditor.setVisible(false);
     }
-    
+
     public void handleAdd() {
-        boolean isInt = false;
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
         try {
-            Integer.parseInt(edtSalary.getText());
-            isInt = true;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Please input valid salary! (No decimals)");
-            isInt = false;
-        }
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-        if (isInt) {
-            // mysql connection
-            String url = "jdbc:mysql://localhost:3306/cafe";
-            String username = "root";
-            String password = "";
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(url, username, password);
 
-                Connection con = DriverManager.getConnection(url, username, password);
+            Statement stm = con.createStatement();
 
-                Statement stm = con.createStatement();
-
-                if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
-                    if (Login.employeesAcc.get(edtUsername.getText()) != null) {
-                        JOptionPane.showMessageDialog(this, "That user is already an employee!");
-                    } else {
-                        stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "', '" + edtSalary.getText() + "')");
-                        Login.employeesAcc.put(edtUsername.getText(), edtPassword.getText());
-                        JOptionPane.showMessageDialog(this, "New employee added!");
-                    }
+            if (edtUsername.getText().length() > 0 && edtPassword.getText().length() > 0) {
+                if (Login.employeesAcc.get(edtUsername.getText()) != null) {
+                    JOptionPane.showMessageDialog(this, "That user is already an employee!");
                 } else {
-                    JOptionPane.showMessageDialog(this, "Please enter details.");
+                    stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
+                    Login.employeesAcc.put(edtUsername.getText(), edtPassword.getText());
+                    JOptionPane.showMessageDialog(this, "New employee added!");
                 }
-
-                con.close();
-            } catch (Exception e) {
-                System.out.println(e);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter details.");
             }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
-    
+
     public boolean employeeExists(String username) {
         ArrayList<String> al = new ArrayList<>();
         for (String name : Login.employeesAcc.keySet()) {
@@ -114,7 +103,7 @@ public class Manager extends javax.swing.JFrame {
         }
         return al.contains(username);
     }
-    
+
     public void handleRemove() {
         // mysql connection
         String url = "jdbc:mysql://localhost:3306/cafe";
@@ -144,58 +133,16 @@ public class Manager extends javax.swing.JFrame {
             System.out.println(e);
         }
     }
-    
-    public void handleUpdate() {
-        boolean isInt = false;
-        try {
-            Integer.parseInt(edtSalary.getText());
-            isInt = true;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Please input valid salary! (No decimals)");
-            isInt = false;
-        }
 
-        if (isInt) {
-            // mysql connection
-            String url = "jdbc:mysql://localhost:3306/cafe";
-            String username = "root";
-            String password = "";
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-
-                Connection con = DriverManager.getConnection(url, username, password);
-
-                Statement stm = con.createStatement();
-
-                if (edtUsername.getText().length() > 0) {
-                    if (Login.employeesAcc.get(edtUsername.getText()) == null) {
-                        JOptionPane.showMessageDialog(this, "That user is not an employee!");
-                    } else if (Integer.parseInt(edtSalary.getText()) < 0) {
-                        JOptionPane.showMessageDialog(this, "You cannot input negative numbers!");
-                    } else {
-                        stm.executeUpdate("UPDATE `employees` SET `salary`=" + "'" + edtSalary.getText() + "'" + " WHERE `username`=" + "'" + edtUsername.getText() + "'");
-                        JOptionPane.showMessageDialog(this, "Employee's salary is updated!");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Please enter the username of employee.");
-                }
-
-                con.close();
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-    }
-    
     public void userRatingTable() {
-        DefaultTableModel defaultTableModel = (DefaultTableModel)jTable1.getModel();
+        DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
         defaultTableModel.setRowCount(0);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connect = DriverManager.getConnection("jdbc:mysql://localhost/cafe", "root", "");
             Statement statement = connect.createStatement();
             ResultSet result = statement.executeQuery("SELECT * FROM feedbacks");
-            while(result.next()) {
+            while (result.next()) {
                 Object[] feedbackRow = {result.getString("Service Rating"), result.getString("Product Name"), result.getString("Product Rating"), result.getString("Feedback"), result.getString("Customer Name")};
                 defaultTableModel.addRow(feedbackRow);
             }
@@ -203,7 +150,7 @@ public class Manager extends javax.swing.JFrame {
             System.out.println("Connection Error");
         }
     }
-    
+
     public String employeeSecurityCode() {
         String code = "";
         // mysql connection
@@ -229,7 +176,7 @@ public class Manager extends javax.swing.JFrame {
         }
         return code;
     }
-    
+
     public String managerSecurityCode() {
         String code = "";
         // mysql connection
@@ -255,7 +202,7 @@ public class Manager extends javax.swing.JFrame {
         }
         return code;
     }
-    
+
     public void setTime() {
         new Thread(new Runnable() {
             @Override
@@ -276,26 +223,26 @@ public class Manager extends javax.swing.JFrame {
             }
         }).start();
     }
-    
+
     private void sidebarIconSet() {
         ImageIcon managerIcon = new ImageIcon(getClass().getResource("images/sidebarmanager.png"));
         ImageIcon viewEmployeeIcon = new ImageIcon(getClass().getResource("images/viewemployee.png"));
         ImageIcon checkRatingIcon = new ImageIcon(getClass().getResource("images/rating.png"));
         ImageIcon manageCodeIcon = new ImageIcon(getClass().getResource("images/managecode.png"));
         ImageIcon logoutIcon = new ImageIcon(getClass().getResource("images/logout.png"));
-        
+
         Image sideManager = managerIcon.getImage().getScaledInstance(sidebarManagerIcon.getWidth(), sidebarManagerIcon.getHeight(), Image.SCALE_SMOOTH);
         Image sideViewEmployees = viewEmployeeIcon.getImage().getScaledInstance(sidebarViewEmployees.getWidth(), sidebarViewEmployees.getHeight(), Image.SCALE_SMOOTH);
         Image sideCheckRating = checkRatingIcon.getImage().getScaledInstance(sidebarCheckRating.getWidth(), sidebarCheckRating.getHeight(), Image.SCALE_SMOOTH);
         Image sideManageCode = manageCodeIcon.getImage().getScaledInstance(sidebarCodeIcon.getWidth(), sidebarCodeIcon.getHeight(), Image.SCALE_SMOOTH);
         Image sideLogout = logoutIcon.getImage().getScaledInstance(sidebarLogout.getWidth(), sidebarLogout.getHeight(), Image.SCALE_SMOOTH);
-        
+
         sidebarManagerIcon.setIcon(new ImageIcon(sideManager));
         sidebarViewEmployees.setIcon(new ImageIcon(sideViewEmployees));
         sidebarCheckRating.setIcon(new ImageIcon(sideCheckRating));
         sidebarCodeIcon.setIcon(new ImageIcon(sideManageCode));
         sidebarLogout.setIcon(new ImageIcon(sideLogout));
-        
+
     }
 
     /**
@@ -326,13 +273,10 @@ public class Manager extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         edtUsername = new javax.swing.JTextField();
         edtPassword = new javax.swing.JTextField();
-        edtSalary = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         employeeTable = new javax.swing.JTable();
         checkRating = new javax.swing.JPanel();
@@ -499,9 +443,6 @@ public class Manager extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
         jLabel6.setText("Password:");
 
-        jLabel7.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
-        jLabel7.setText("Salary:");
-
         addButton.setBackground(new java.awt.Color(98, 66, 57));
         addButton.setForeground(new java.awt.Color(255, 255, 255));
         addButton.setText("Add");
@@ -509,6 +450,11 @@ public class Manager extends javax.swing.JFrame {
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 addButtonMouseClicked(evt);
+            }
+        });
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
             }
         });
 
@@ -521,15 +467,6 @@ public class Manager extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setBackground(new java.awt.Color(98, 66, 57));
-        jButton8.setForeground(new java.awt.Color(255, 255, 255));
-        jButton8.setText("Update Salary");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -537,25 +474,19 @@ public class Manager extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel7)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel6)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(edtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(edtPassword)
-                            .addComponent(edtSalary)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel6))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(edtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                    .addComponent(edtPassword))
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(102, 102, 102))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -568,34 +499,29 @@ public class Manager extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(edtPassword)
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(edtSalary))
-                .addGap(18, 18, 18)
+                .addGap(79, 79, 79)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
         employeeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Username", "Salary"
+                "Username"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class
+                java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -609,7 +535,6 @@ public class Manager extends javax.swing.JFrame {
         jScrollPane3.setViewportView(employeeTable);
         if (employeeTable.getColumnModel().getColumnCount() > 0) {
             employeeTable.getColumnModel().getColumn(0).setResizable(false);
-            employeeTable.getColumnModel().getColumn(1).setResizable(false);
         }
 
         javax.swing.GroupLayout viewEmployeeLayout = new javax.swing.GroupLayout(viewEmployee);
@@ -657,8 +582,23 @@ public class Manager extends javax.swing.JFrame {
             new String [] {
                 "Service Rating", "Product Name", "Product Rating", "Feedback", "Customer Name"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         javax.swing.GroupLayout checkRatingLayout = new javax.swing.GroupLayout(checkRating);
         checkRating.setLayout(checkRatingLayout);
@@ -873,10 +813,6 @@ public class Manager extends javax.swing.JFrame {
         handleRemove();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        handleUpdate();
-    }//GEN-LAST:event_jButton8ActionPerformed
-
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
         String url = "jdbc:mysql://localhost:3306/cafe";
         String username = "root";
@@ -890,8 +826,8 @@ public class Manager extends javax.swing.JFrame {
             if (jPasswordField1.getText().equalsIgnoreCase(employeeSecurityCode())) {
                 JOptionPane.showMessageDialog(this, "It's the same code!");
             } else {
-            stm.executeUpdate("update code set `employee`="+"'"+jPasswordField1.getText()+"'");
-            JOptionPane.showMessageDialog(this, "Code is updated!");
+                stm.executeUpdate("update code set `employee`=" + "'" + jPasswordField1.getText() + "'");
+                JOptionPane.showMessageDialog(this, "Code is updated!");
             }
             con.close();
         } catch (Exception e) {
@@ -912,8 +848,8 @@ public class Manager extends javax.swing.JFrame {
             if (jPasswordField2.getText().equalsIgnoreCase(managerSecurityCode())) {
                 JOptionPane.showMessageDialog(this, "It's the same code!");
             } else {
-            stm.executeUpdate("update code set `manager`="+"'"+jPasswordField2.getText()+"'");
-            JOptionPane.showMessageDialog(this, "Code is updated!");
+                stm.executeUpdate("update code set `manager`=" + "'" + jPasswordField2.getText() + "'");
+                JOptionPane.showMessageDialog(this, "Code is updated!");
             }
             con.close();
         } catch (Exception e) {
@@ -926,6 +862,10 @@ public class Manager extends javax.swing.JFrame {
         checkRating.setVisible(false);
         securityCodeEditor.setVisible(true);
     }//GEN-LAST:event_sidebarCodeIconMouseClicked
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -966,13 +906,11 @@ public class Manager extends javax.swing.JFrame {
     private javax.swing.JButton addButton;
     private javax.swing.JPanel checkRating;
     private javax.swing.JTextField edtPassword;
-    private javax.swing.JTextField edtSalary;
     private javax.swing.JTextField edtUsername;
     private javax.swing.JTable employeeTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -981,7 +919,6 @@ public class Manager extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLayeredPane jLayeredPane1;
