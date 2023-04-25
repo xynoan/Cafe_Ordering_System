@@ -119,15 +119,7 @@ public class CheckRatings extends javax.swing.JFrame {
             new String [] {
                 "Service Rating", "Product Name", "Product Rating", "Feedback", "Customer Name"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
