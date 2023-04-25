@@ -329,7 +329,7 @@ public class Menu extends javax.swing.JFrame {
             labels[i].setText(pn.get(i));
         }
         for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
-            labelsPrice[i].setText("₱" + pp.get(i));
+            labelsPrice[i].setText("$" + pp.get(i));
         }
         for (int i = 0; i < pi.size() && i < labelsImage.length; i++) {
             ImageIcon icon = new ImageIcon(getClass().getResource(pi.get(i)));
@@ -368,6 +368,7 @@ public class Menu extends javax.swing.JFrame {
             new ImageIcon(getClass().getResource(image));
         } catch (Exception e) {
             return false;
+//            return "That image location does not exist!";
         }
         return true;
     }
@@ -459,7 +460,7 @@ public class Menu extends javax.swing.JFrame {
                 + "Time: " + jTxTime.getText() + " Date: " + jTxtDate.getText() + "\n"
                 + "Purchase Id: " + purchaseId + "\n"
                 + "**********************************************************************\n"
-                + "QTY\t" + "ITEM\t\t"+"PRICE\t"+"TOTAL\n");
+                + "Item Name:\t\t\t" + "Price($)\n");
     }
 
     public void getTax(double t) {
@@ -660,6 +661,7 @@ public class Menu extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setName(""); // NOI18N
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 2));
@@ -1577,11 +1579,11 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Tax (₱)");
+        jLabel3.setText("Tax ($)");
 
         jLabel4.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Sub Total (₱)");
+        jLabel4.setText("Sub Total ($)");
 
         jLabel10.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -1739,8 +1741,8 @@ public class Menu extends javax.swing.JFrame {
         jPanel16.setLayout(jPanel16Layout);
         jPanel16Layout.setHorizontalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sidebarLogout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1798,7 +1800,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel14.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel14.getText() + "\t"+getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox2.setSelected(false);
@@ -1817,7 +1819,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel20.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel20.getText() + "\t\t"+getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox3.setSelected(false);
@@ -1836,7 +1838,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel26.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel26.getText() + "\t\t"+getPriceDB(jLabel26.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox4.setSelected(false);
@@ -1855,7 +1857,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel32.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel32.getText() + "\t\t"+getPriceDB(jLabel32.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox5.setSelected(false);
@@ -1874,7 +1876,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel38.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel38.getText() + "\t"+getPriceDB(jLabel38.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox6.setSelected(false);
@@ -1893,7 +1895,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel44.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel44.getText() + "\t\t"+getPriceDB(jLabel44.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox7.setSelected(false);
@@ -1912,7 +1914,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel50.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel50.getText() + "\t\t"+getPriceDB(jLabel50.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox8.setSelected(false);
@@ -1931,7 +1933,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel56.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel56.getText() + "\t\t"+getPriceDB(jLabel56.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox9.setSelected(false);
@@ -2004,7 +2006,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel8.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t"+jLabel8.getText() + "\t"+getPriceDB(jLabel8.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox1.setSelected(false);
@@ -2023,7 +2025,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel62.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" +jLabel62.getText() + "\t"+getPriceDB(jLabel62.getText())+"\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox10.setSelected(false);
