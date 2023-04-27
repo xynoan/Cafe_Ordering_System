@@ -22,7 +22,6 @@ import javax.swing.JOptionPane;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author admin
@@ -38,19 +37,19 @@ public class Employee extends javax.swing.JFrame {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
-    
+
     public void init() {
         SidebarIconSetter();
         setTime();
     }
-    
+
     public void SidebarIconSetter() {
-        ImageIcon employeeIcon = new  ImageIcon(getClass().getResource("images/employeelogo.png"));
-        ImageIcon logoutButton = new ImageIcon(getClass(). getResource("images/logout.png"));
-        
+        ImageIcon employeeIcon = new ImageIcon(getClass().getResource("images/employeelogo.png"));
+        ImageIcon logoutButton = new ImageIcon(getClass().getResource("images/logout.png"));
+
         Image sideLogo = employeeIcon.getImage().getScaledInstance(employeeLogo.getWidth(), employeeLogo.getHeight(), Image.SCALE_SMOOTH);
         Image sideLogout = logoutButton.getImage().getScaledInstance(logoutIcon.getWidth(), logoutIcon.getHeight(), Image.SCALE_SMOOTH);
-        
+
         employeeLogo.setIcon(new ImageIcon(sideLogo));
         logoutIcon.setIcon(new ImageIcon(sideLogout));
     }
@@ -65,11 +64,6 @@ public class Employee extends javax.swing.JFrame {
         } else if (imageField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the image location!");
         } else {
-            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
-            Matcher matcher = pattern.matcher(nameField.getText());
-            if (matcher.matches()) {
-                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
-            }
             boolean isDouble = false;
             try {
                 Double.parseDouble(priceField.getText());
@@ -82,7 +76,7 @@ public class Employee extends javax.swing.JFrame {
             if (!menu.validateImage(imageField.getText())) {
                 JOptionPane.showMessageDialog(this, "That image location does not exist!");
             }
-            if (!matcher.matches() && isDouble && menu.validateImage(imageField.getText())) {
+            if (isDouble && menu.validateImage(imageField.getText())) {
                 // mysql connection
                 String url = "jdbc:mysql://localhost:3306/cafe";
                 String username = "root";
@@ -110,7 +104,7 @@ public class Employee extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public boolean productAlreadyExists(String productName) {
         ArrayList<String> al = new ArrayList<>();
         // mysql connection
@@ -137,7 +131,7 @@ public class Employee extends javax.swing.JFrame {
 
         return al.contains(productName.toLowerCase());
     }
-    
+
     public boolean productAlreadyRemoved(String productName) {
         ArrayList<String> al = new ArrayList<>();
         // mysql connection
@@ -164,7 +158,7 @@ public class Employee extends javax.swing.JFrame {
 
         return al.contains(productName.toLowerCase());
     }
-    
+
     public boolean vacantJPanel() {
         boolean vacant = false;
         // mysql connection
@@ -191,7 +185,7 @@ public class Employee extends javax.swing.JFrame {
 
         return vacant;
     }
-    
+
     public void setTime() {
         new Thread(new Runnable() {
             @Override
@@ -212,7 +206,7 @@ public class Employee extends javax.swing.JFrame {
             }
         }).start();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -248,6 +242,16 @@ public class Employee extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 2));
@@ -346,6 +350,11 @@ public class Employee extends javax.swing.JFrame {
                 addButtonMouseClicked(evt);
             }
         });
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         removeButton.setBackground(new java.awt.Color(98, 66, 57));
         removeButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -364,6 +373,11 @@ public class Employee extends javax.swing.JFrame {
                 updateButtonMouseClicked(evt);
             }
         });
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
 
         jButton1.setBackground(new java.awt.Color(98, 66, 57));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -371,6 +385,11 @@ public class Employee extends javax.swing.JFrame {
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -400,6 +419,9 @@ public class Employee extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addContainerGap())
         );
+
+        stockField.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        stockField.setToolTipText("");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -524,7 +546,51 @@ public class Employee extends javax.swing.JFrame {
     }//GEN-LAST:event_removeButtonMouseClicked
 
     private void updateButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateButtonMouseClicked
-        restrictions();
+        if (nameField.getText().isEmpty() && priceField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the details!");
+        } else if (nameField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the product name!");
+        } else if (priceField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the price!");
+        } else {
+            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
+            Matcher matcher = pattern.matcher(nameField.getText());
+            if (matcher.matches()) {
+                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
+            }
+            boolean isDouble = false;
+            try {
+                Double.parseDouble(priceField.getText());
+                isDouble = true;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Please input valid price! (0.0, 1.0, 2.5)");
+                isDouble = false;
+            }
+
+            if (!matcher.matches() && isDouble) {
+                // mysql connection
+                String url = "jdbc:mysql://localhost:3306/cafe";
+                String username = "root";
+                String password = "";
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+
+                    Connection con = DriverManager.getConnection(url, username, password);
+
+                    Statement stm = con.createStatement();
+                    if (productAlreadyExists(nameField.getText())) {
+                        // UPDATE `products` SET `Price`='20' WHERE `Product Name` ='Cold Coffee'
+                        stm.executeUpdate("UPDATE `products` SET `Price`=" + "'" + priceField.getText() + "'" + " WHERE `Product Name`=" + "'" + nameField.getText() + "'");
+                        JOptionPane.showMessageDialog(this, "Product Price is updated!");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "That product doesn't exist!");
+                    }
+                    con.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
     }//GEN-LAST:event_updateButtonMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -534,6 +600,31 @@ public class Employee extends javax.swing.JFrame {
         String fileDir = imageFile.getAbsolutePath();
         imageField.setText(fileDir);
     }//GEN-LAST:event_jButton1MouseClicked
+    int xx, xy;
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // TODO add your handling code here:
+        xx = evt.getX();
+        xy = evt.getY();
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // TODO add your handling code here:
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xx, y - xy);
+    }//GEN-LAST:event_formMouseDragged
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
