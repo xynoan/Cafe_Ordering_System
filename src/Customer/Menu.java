@@ -380,7 +380,7 @@ public class Menu extends javax.swing.JFrame {
         }
         return true;
     }
-    
+
     private void sidebarIconSet() {
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("images/icon.png"));
         ImageIcon homeIcon = new ImageIcon(getClass().getResource("images/home.png"));
@@ -388,14 +388,14 @@ public class Menu extends javax.swing.JFrame {
         ImageIcon feedbackIcon = new ImageIcon(getClass().getResource("images/feedback.png"));
         ImageIcon logoutIcon = new ImageIcon(getClass().getResource("images/logout.png"));
         ImageIcon exitIcon = new ImageIcon(getClass().getResource("images/exit.png"));
-        
+
         Image sideLogo = logoIcon.getImage().getScaledInstance(sidebarLogo.getWidth(), sidebarLogo.getHeight(), Image.SCALE_SMOOTH);
         Image sideHome = homeIcon.getImage().getScaledInstance(sidebarHome.getWidth(), sidebarHome.getHeight(), Image.SCALE_SMOOTH);
         Image sideCart = cartIcon.getImage().getScaledInstance(sidebarCart.getWidth(), sidebarHome.getHeight(), Image.SCALE_SMOOTH);
         Image sideFeedback = feedbackIcon.getImage().getScaledInstance(sidebarFeedback.getWidth(), sidebarFeedback.getHeight(), Image.SCALE_SMOOTH);
         Image sideLogout = logoutIcon.getImage().getScaledInstance(sidebarLogout.getWidth(), sidebarLogout.getHeight(), Image.SCALE_SMOOTH);
         Image exitIco = exitIcon.getImage().getScaledInstance(exitButton.getWidth(), exitButton.getHeight(), Image.SCALE_SMOOTH);
-        
+
         sidebarLogo.setIcon(new ImageIcon(sideLogo));
         sidebarHome.setIcon(new ImageIcon(sideHome));
         sidebarCart.setIcon(new ImageIcon(sideCart));
@@ -403,7 +403,7 @@ public class Menu extends javax.swing.JFrame {
         sidebarLogout.setIcon(new ImageIcon(sideLogout));
         exitButton.setIcon(new ImageIcon(exitIco));
     }
-    
+
     public void reset() {
         total = 0.0;
         x = 0;
@@ -527,12 +527,12 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
     }
-    
+
     private void windowSetVisibilityDefaults() {
         jPanel3.setVisible(true);
         cartWindow.setVisible(false);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -662,9 +662,24 @@ public class Menu extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setName(""); // NOI18N
         setUndecorated(true);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 2));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPanel1MousePressed(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -1966,15 +1981,10 @@ public class Menu extends javax.swing.JFrame {
 
     private void jPanel2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseDragged
         // TODO add your handling code here:
-        int x = evt.getXOnScreen();
-        int y = evt.getYOnScreen();
-        this.setLocation(x - xx, y - xy);
     }//GEN-LAST:event_jPanel2MouseDragged
 
     private void jPanel2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MousePressed
         // TODO add your handling code here:
-        xx = evt.getX();
-        xy = evt.getY();
     }//GEN-LAST:event_jPanel2MousePressed
 
     private void btnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptActionPerformed
@@ -2060,7 +2070,24 @@ public class Menu extends javax.swing.JFrame {
         fb.setVisible(true);
         dispose();
     }//GEN-LAST:event_sidebarFeedbackMouseClicked
+
+    private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel1MousePressed
     int xx, xy;
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // TODO add your handling code here:
+        xx = evt.getX();
+        xy = evt.getY();
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // TODO add your handling code here:
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xx, y - xy);
+    }//GEN-LAST:event_formMouseDragged
 
     /**
      * @param args the command line arguments
