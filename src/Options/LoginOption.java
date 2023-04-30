@@ -206,15 +206,8 @@ public class LoginOption extends javax.swing.JFrame {
             Menu menu = new Menu();
             menu.setVisible(true);
             dispose();
-        } else if (Login.customersAcc.get(username) == null) {
-            JOptionPane.showMessageDialog(this, "Wrong username!");
-            login.setVisible(true);
-            dispose();
-        } else if (Login.customersAcc.get(username) != null
-                && !password.equals(Login.customersAcc.get(username))) {
-            JOptionPane.showMessageDialog(this, "Wrong password!");
-            login.setVisible(true);
-            dispose();
+        } else if (Login.customersAcc.get(username) == null && !password.equals(Login.customersAcc.get(username))) {
+            JOptionPane.showMessageDialog(this, "You're not a customer!");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

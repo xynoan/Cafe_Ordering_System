@@ -116,10 +116,43 @@ public class Login extends javax.swing.JFrame {
         } else {
             LoginOption.username = edtUsername.getText();
             LoginOption.password = edtPassword.getText();
-            LoginOption lo = new LoginOption();
-            lo.setVisible(true);
-            dispose();
+            if (isCustomer(edtUsername.getText(), edtPassword.getText()) || isEmployee(edtUsername.getText(), edtPassword.getText())
+                    || isManager(edtUsername.getText(), edtPassword.getText())) {
+                LoginOption lo = new LoginOption();
+                lo.setVisible(true);
+                dispose();
+            } else {
+                wrongPrompt(edtUsername.getText(), edtPassword.getText());
+                edtUsername.setText("");
+                edtPassword.setText("");
+            }
         }
+    }
+
+    public void wrongPrompt(String username, String password) {
+        if (customersAcc.get(username) == null || employeesAcc.get(username) == null
+                || managersAcc.get(username) == null) {
+            JOptionPane.showMessageDialog(this, "Wrong username or password!");
+        } else if (customersAcc.get(username) != null && !password.equals(customersAcc.get(username))
+                || employeesAcc.get(username) != null && !password.equals(employeesAcc.get(username))
+                || managersAcc.get(username) != null && !password.equals(managersAcc.get(username))) {
+            JOptionPane.showMessageDialog(this, "Wrong username or password!");
+        } 
+    }
+
+    public boolean isCustomer(String username, String password) {
+        return customersAcc.get(username) != null
+                && password.equals(customersAcc.get(username));
+    }
+
+    public boolean isEmployee(String username, String password) {
+        return employeesAcc.get(username) != null
+                && password.equals(employeesAcc.get(username));
+    }
+
+    public boolean isManager(String username, String password) {
+        return managersAcc.get(username) != null
+                && password.equals(managersAcc.get(username));
     }
 
     public void goToSignUp() {

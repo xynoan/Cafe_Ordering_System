@@ -129,7 +129,7 @@ public class Employee extends javax.swing.JFrame {
             System.out.println(e);
         }
 
-        return al.contains(productName.toLowerCase());
+        return al.contains(productName.trim().toLowerCase());
     }
 
     public boolean productAlreadyRemoved(String productName) {
@@ -362,6 +362,11 @@ public class Employee extends javax.swing.JFrame {
         removeButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 removeButtonMouseClicked(evt);
+            }
+        });
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeButtonActionPerformed(evt);
             }
         });
 
@@ -597,7 +602,8 @@ public class Employee extends javax.swing.JFrame {
         JFileChooser imageChooser = new JFileChooser();
         imageChooser.showOpenDialog(null);
         File imageFile = imageChooser.getSelectedFile();
-        String fileDir = imageFile.getAbsolutePath();
+        String fileName = imageFile.getName();
+        String fileDir = "/images/" + fileName;
         imageField.setText(fileDir);
     }//GEN-LAST:event_jButton1MouseClicked
     int xx, xy;
@@ -625,6 +631,10 @@ public class Employee extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_removeButtonActionPerformed
 
     /**
      * @param args the command line arguments

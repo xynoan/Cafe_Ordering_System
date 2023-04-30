@@ -303,9 +303,9 @@ public class Manager extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         edtUsername = new javax.swing.JTextField();
-        edtPassword = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        edtPassword = new javax.swing.JPasswordField();
         jScrollPane3 = new javax.swing.JScrollPane();
         employeeTable = new javax.swing.JTable();
         checkRating = new javax.swing.JPanel();
@@ -531,9 +531,9 @@ public class Manager extends javax.swing.JFrame {
                     .addComponent(edtUsername)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(edtPassword)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(edtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(79, 79, 79)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -924,6 +924,7 @@ public class Manager extends javax.swing.JFrame {
         String s_name = (String) dtm.getValueAt(selectedRowIndex, 0);
 
         edtUsername.setText(s_name);
+        edtPassword.setText("");
     }//GEN-LAST:event_employeeTableMouseClicked
 
     /**
@@ -964,7 +965,7 @@ public class Manager extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JPanel checkRating;
-    private javax.swing.JTextField edtPassword;
+    private javax.swing.JPasswordField edtPassword;
     private javax.swing.JTextField edtUsername;
     private javax.swing.JTable employeeTable;
     private javax.swing.JButton jButton1;
