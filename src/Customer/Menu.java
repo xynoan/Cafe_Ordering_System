@@ -329,7 +329,7 @@ public class Menu extends javax.swing.JFrame {
             labels[i].setText(pn.get(i));
         }
         for (int i = 0; i < pp.size() && i < labelsPrice.length; i++) {
-            labelsPrice[i].setText("$" + pp.get(i));
+            labelsPrice[i].setText("₱" + pp.get(i));
         }
         for (int i = 0; i < pi.size() && i < labelsImage.length; i++) {
             ImageIcon icon = new ImageIcon(getClass().getResource(pi.get(i)));
@@ -460,7 +460,7 @@ public class Menu extends javax.swing.JFrame {
                 + "Time: " + jTxTime.getText() + " Date: " + jTxtDate.getText() + "\n"
                 + "Purchase Id: " + purchaseId + "\n"
                 + "**********************************************************************\n"
-                + "Item Name:\t\t\t" + "Price($)\n");
+                + "QTY\t" + "ITEM\t\t" + "PRICE\t" + "TOTAL\n");
     }
 
     public void getTax(double t) {
@@ -489,7 +489,7 @@ public class Menu extends javax.swing.JFrame {
         jTextFieldTotal.setText(String.valueOf(String.format("%.2f", (total + tax))));
     }
 
-    public void decrementStocks(String productName, int qty) {
+    public boolean decrementStocks(String productName, int qty) {
         // mysql connection
         int currentStock = 0;
         String url = "jdbc:mysql://localhost:3306/cafe";
@@ -514,18 +514,22 @@ public class Menu extends javax.swing.JFrame {
             System.out.println(e);
         }
         // then decrement based on the current stock and quantity.
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        if (currentStock > 0) {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection(url, username, password);
+                Connection con = DriverManager.getConnection(url, username, password);
 
-            Statement stm = con.createStatement();
-            stm.executeUpdate("update products set `Stock`=" + "'" + (currentStock - qty) + "' where `Product Name`=" + "'" + productName + "'");
+                Statement stm = con.createStatement();
+                stm.executeUpdate("update products set `Stock`=" + "'" + (currentStock - qty) + "' where `Product Name`=" + "'" + productName + "'");
 
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            return true;
         }
+        return false;
     }
 
     private void windowSetVisibilityDefaults() {
@@ -1594,15 +1598,15 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Tax ($)");
+        jLabel3.setText("Tax (₱)");
 
         jLabel4.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Sub Total ($)");
+        jLabel4.setText("Sub Total (₱)");
 
         jLabel10.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("Total ($)");
+        jLabel10.setText("Total (₱)");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1815,7 +1819,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel14.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel14.getText() + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox2.setSelected(false);
@@ -1834,7 +1838,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel20.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel20.getText() + "\t\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox3.setSelected(false);
@@ -1853,7 +1857,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel26.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel26.getText() + "\t\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox4.setSelected(false);
@@ -1872,7 +1876,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel32.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel32.getText() + "\t\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox5.setSelected(false);
@@ -1891,7 +1895,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel38.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel38.getText() + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox6.setSelected(false);
@@ -1910,7 +1914,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel44.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel44.getText() + "\t\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox7.setSelected(false);
@@ -1929,7 +1933,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel50.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel50.getText() + "\t\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox8.setSelected(false);
@@ -1948,7 +1952,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel56.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel56.getText() + "\t\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox9.setSelected(false);
@@ -2008,16 +2012,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner1.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox1.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel8.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel8.getText(), qty);
+                double price = qty * getPriceDB(jLabel8.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel8.getText() + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel8.getText(), qty);
-            double price = qty * getPriceDB(jLabel8.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox1.setSelected(false);
         }
@@ -2035,7 +2043,7 @@ public class Menu extends javax.swing.JFrame {
             double price = qty * getPriceDB(jLabel62.getText());
             total += price;
             getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t\t" + String.format("%.2f", price) + "\n");
+            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel62.getText() + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
             dudate();
         } else {
             jCheckBox10.setSelected(false);

@@ -34,15 +34,15 @@ public class Code extends javax.swing.JFrame {
         employeeCode = false;
         managerCode = false;
     }
-    
-    public void handleTitle(){
+
+    public void handleTitle() {
         if (managerCode) {
             setTitle("Code for managers");
         } else if (employeeCode) {
             setTitle("Code for employees");
         }
     }
-    
+
     public String getManagerCode() {
         String code = "";
         // mysql connection
@@ -68,7 +68,7 @@ public class Code extends javax.swing.JFrame {
         }
         return code;
     }
-    
+
     public String getEmployeeCode() {
         String code = "";
         // mysql connection
@@ -229,42 +229,31 @@ public class Code extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        LoginOption login = new LoginOption();
         if (jPasswordField1.getText().equalsIgnoreCase(getEmployeeCode()) && employeeCode) {
-            Login login = new Login();
             if (Login.employeesAcc.get(LoginOption.username) != null
                     && LoginOption.password.equals(Login.employeesAcc.get(LoginOption.username))) {
                 employeeCode = false;
                 Employee employee = new Employee();
                 employee.setVisible(true);
                 dispose();
-            } else if (Login.employeesAcc.get(LoginOption.username) == null) {
-                JOptionPane.showMessageDialog(this, "Wrong username!");
-                employeeCode = false;
-                login.setVisible(true);
-                dispose();
-            } else if (Login.employeesAcc.get(LoginOption.username) != null
+            } else if (Login.employeesAcc.get(LoginOption.username) == null
                     && !LoginOption.password.equals(Login.employeesAcc.get(LoginOption.username))) {
-                JOptionPane.showMessageDialog(this, "Wrong password!");
+                JOptionPane.showMessageDialog(this, "You're not an employee!");
                 employeeCode = false;
                 login.setVisible(true);
                 dispose();
             }
         } else if (jPasswordField1.getText().equalsIgnoreCase(getManagerCode()) && managerCode) {
-            Login login = new Login();
             if (Login.managersAcc.get(LoginOption.username) != null
                     && LoginOption.password.equals(Login.managersAcc.get(LoginOption.username))) {
                 managerCode = false;
                 Manager manager = new Manager();
                 manager.setVisible(true);
                 dispose();
-            } else if (Login.managersAcc.get(LoginOption.username) == null) {
-                JOptionPane.showMessageDialog(this, "Wrong username!");
-                managerCode = false;
-                login.setVisible(true);
-                dispose();
-            } else if (Login.managersAcc.get(LoginOption.username) != null
+            } else if (Login.managersAcc.get(LoginOption.username) == null
                     && !LoginOption.password.equals(Login.managersAcc.get(LoginOption.username))) {
-                JOptionPane.showMessageDialog(this, "Wrong password!");
+                JOptionPane.showMessageDialog(this, "You're not a manager!");
                 managerCode = false;
                 login.setVisible(true);
                 dispose();
