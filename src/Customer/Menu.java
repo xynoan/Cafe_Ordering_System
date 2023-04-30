@@ -1811,16 +1811,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner2.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox2.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel14.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel14.getText(), qty);
+                double price = qty * getPriceDB(jLabel14.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel14.getText() + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel14.getText(), qty);
-            double price = qty * getPriceDB(jLabel14.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel14.getText() + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox2.setSelected(false);
         }
@@ -1830,16 +1834,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner3.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox3.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel20.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel20.getText(), qty);
+                double price = qty * getPriceDB(jLabel20.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel20.getText() + "\t\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel20.getText(), qty);
-            double price = qty * getPriceDB(jLabel20.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel20.getText() + "\t\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox3.setSelected(false);
         }
@@ -1849,16 +1857,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner4.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox4.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel26.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel26.getText(), qty);
+                double price = qty * getPriceDB(jLabel26.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel26.getText() + "\t\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel26.getText(), qty);
-            double price = qty * getPriceDB(jLabel26.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel26.getText() + "\t\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox4.setSelected(false);
         }
@@ -1868,16 +1880,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner5.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox5.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel32.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel32.getText(), qty);
+                double price = qty * getPriceDB(jLabel32.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel32.getText() + "\t\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel32.getText(), qty);
-            double price = qty * getPriceDB(jLabel32.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel32.getText() + "\t\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox5.setSelected(false);
         }
@@ -1887,16 +1903,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner6.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox6.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel38.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel38.getText(), qty);
+                double price = qty * getPriceDB(jLabel38.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel38.getText() + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel38.getText(), qty);
-            double price = qty * getPriceDB(jLabel38.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel38.getText() + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox6.setSelected(false);
         }
@@ -1906,16 +1926,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner7.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox7.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel44.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel44.getText(), qty);
+                double price = qty * getPriceDB(jLabel44.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel44.getText() + "\t\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel44.getText(), qty);
-            double price = qty * getPriceDB(jLabel44.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel44.getText() + "\t\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox7.setSelected(false);
         }
@@ -1925,16 +1949,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner8.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox8.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel50.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel50.getText(), qty);
+                double price = qty * getPriceDB(jLabel50.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel50.getText() + "\t\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel50.getText(), qty);
-            double price = qty * getPriceDB(jLabel50.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel50.getText() + "\t\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox8.setSelected(false);
         }
@@ -1944,16 +1972,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner9.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox9.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel56.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel56.getText(), qty);
+                double price = qty * getPriceDB(jLabel56.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel56.getText() + "\t\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel56.getText(), qty);
-            double price = qty * getPriceDB(jLabel56.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel56.getText() + "\t\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox9.setSelected(false);
         }
@@ -2035,16 +2067,20 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         int qty = Integer.parseInt(jSpinner10.getValue().toString());
         if (qtyIsZero(qty) && jCheckBox10.isSelected()) {
-            x++;
-            if (x == 1) {
-                moonbucks();
+            if (!decrementStocks(jLabel62.getText(), qty)) {
+                JOptionPane.showMessageDialog(this, "Out of stock!");
+            } else {
+                x++;
+                if (x == 1) {
+                    moonbucks();
+                }
+                decrementStocks(jLabel62.getText(), qty);
+                double price = qty * getPriceDB(jLabel62.getText());
+                total += price;
+                getTax(total);
+                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel62.getText() + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                dudate();
             }
-            decrementStocks(jLabel62.getText(), qty);
-            double price = qty * getPriceDB(jLabel62.getText());
-            total += price;
-            getTax(total);
-            jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel62.getText() + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
-            dudate();
         } else {
             jCheckBox10.setSelected(false);
         }
