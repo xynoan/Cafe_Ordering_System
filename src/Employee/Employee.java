@@ -272,10 +272,10 @@ public class Employee extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
+                .addGap(57, 57, 57)
                 .addComponent(jTxTime, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTxtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(jTxtDate, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -338,6 +338,7 @@ public class Employee extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel5.setText("Image Location:");
 
+        imageField.setEditable(false);
         imageField.setToolTipText("");
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -599,12 +600,16 @@ public class Employee extends javax.swing.JFrame {
     }//GEN-LAST:event_updateButtonMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        JFileChooser imageChooser = new JFileChooser();
-        imageChooser.showOpenDialog(null);
-        File imageFile = imageChooser.getSelectedFile();
-        String fileName = imageFile.getName();
-        String fileDir = "/images/" + fileName;
-        imageField.setText(fileDir);
+        try {
+            JFileChooser imageChooser = new JFileChooser();
+            imageChooser.showOpenDialog(null);
+            File imageFile = imageChooser.getSelectedFile();
+            String fileName = imageFile.getName();
+            String fileDir = "/images/" + fileName;
+            imageField.setText(fileDir);
+        } catch (Exception e) {
+            System.out.println("No file selected!");
+        }
     }//GEN-LAST:event_jButton1MouseClicked
     int xx, xy;
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed

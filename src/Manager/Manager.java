@@ -144,7 +144,7 @@ public class Manager extends javax.swing.JFrame {
                             Object[] row = {rs.getString("username")};
                             model.addRow(row);
                         }
-                        
+
                         Login.employeesAcc.remove(edtUsername.getText());
                         JOptionPane.showMessageDialog(this, "Employee removed!");
 
@@ -357,6 +357,11 @@ public class Manager extends javax.swing.JFrame {
         jButton11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton11MouseClicked(evt);
+            }
+        });
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
             }
         });
 
@@ -790,11 +795,11 @@ public class Manager extends javax.swing.JFrame {
                         .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
                         .addComponent(jTxTime, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jTxtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jTxtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -854,46 +859,54 @@ public class Manager extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
-        String url = "jdbc:mysql://localhost:3306/cafe";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        if (!jPasswordField1.getText().isEmpty()) {
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection(url, username, password);
+                Connection con = DriverManager.getConnection(url, username, password);
 
-            Statement stm = con.createStatement();
-            if (jPasswordField1.getText().equalsIgnoreCase(employeeSecurityCode())) {
-                JOptionPane.showMessageDialog(this, "It's the same code!");
-            } else {
-                stm.executeUpdate("update code set `employee`=" + "'" + jPasswordField1.getText() + "'");
-                JOptionPane.showMessageDialog(this, "Code is updated!");
+                Statement stm = con.createStatement();
+                if (jPasswordField1.getText().equalsIgnoreCase(employeeSecurityCode())) {
+                    JOptionPane.showMessageDialog(this, "It's the same code!");
+                } else {
+                    stm.executeUpdate("update code set `employee`=" + "'" + jPasswordField1.getText() + "'");
+                    JOptionPane.showMessageDialog(this, "Code is updated!");
+                }
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
             }
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter code!");
         }
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jButton11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton11MouseClicked
-        String url = "jdbc:mysql://localhost:3306/cafe";
-        String username = "root";
-        String password = "";
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+        if (!jPasswordField2.getText().isEmpty()) {
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection(url, username, password);
+                Connection con = DriverManager.getConnection(url, username, password);
 
-            Statement stm = con.createStatement();
-            if (jPasswordField2.getText().equalsIgnoreCase(managerSecurityCode())) {
-                JOptionPane.showMessageDialog(this, "It's the same code!");
-            } else {
-                stm.executeUpdate("update code set `manager`=" + "'" + jPasswordField2.getText() + "'");
-                JOptionPane.showMessageDialog(this, "Code is updated!");
+                Statement stm = con.createStatement();
+                if (jPasswordField2.getText().equalsIgnoreCase(managerSecurityCode())) {
+                    JOptionPane.showMessageDialog(this, "It's the same code!");
+                } else {
+                    stm.executeUpdate("update code set `manager`=" + "'" + jPasswordField2.getText() + "'");
+                    JOptionPane.showMessageDialog(this, "Code is updated!");
+                }
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
             }
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter code!");
         }
     }//GEN-LAST:event_jButton11MouseClicked
 
@@ -926,6 +939,10 @@ public class Manager extends javax.swing.JFrame {
         edtUsername.setText(s_name);
         edtPassword.setText("");
     }//GEN-LAST:event_employeeTableMouseClicked
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
 
     /**
      * @param args the command line arguments
