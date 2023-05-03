@@ -68,11 +68,11 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                          <Component id="jLabel13" min="-2" pref="349" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel13" min="-2" pref="271" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           <Component id="jTxTime" min="-2" pref="91" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jTxtDate" min="-2" pref="162" max="-2" attributes="0"/>
+                          <Component id="jTxtDate" min="-2" pref="218" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -278,6 +278,7 @@
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton11MouseClicked"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JPasswordField" name="jPasswordField2">
