@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 
 public class Menu extends javax.swing.JFrame {
 
+    private HashMap<String, String> cartItems = new HashMap<String, String>();
     private double total = 0.0;
     private int x = 0;
     private double tax = 0.0;
@@ -451,6 +453,8 @@ public class Menu extends javax.swing.JFrame {
         jTextFieldTax.setText("0.0");
         jTextFieldSubTotal.setText("0.0");
         jTextFieldTotal.setText("0.0");
+        edtPayment.setText("0.0");
+        edtChange.setText("0.0");
         jTextArea1.setText("");
         jCheckBox1.setSelected(false);
         jCheckBox2.setSelected(false);
@@ -461,6 +465,8 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox7.setSelected(false);
         jCheckBox8.setSelected(false);
         jCheckBox9.setSelected(false);
+        edtPayment.setEditable(true);
+        cartItems.clear();
     }
 
     public void setTime() {
@@ -490,7 +496,7 @@ public class Menu extends javax.swing.JFrame {
                 + "Time: " + jTxTime.getText() + " Date: " + jTxtDate.getText() + "\n"
                 + "Purchase Id: " + purchaseId + "\n"
                 + "**********************************************************************\n"
-                + "QTY\t" + "ITEM\t\t" + "PRICE\t" + "TOTAL\n");
+                + "ITEM\t\t" + "QTY\t" + "PRICE\t" + "TOTAL\n");
     }
 
     public void getTax(double t) {
@@ -510,6 +516,8 @@ public class Menu extends javax.swing.JFrame {
             tax = 10.0;
         } else if (t > 200.0) {
             tax = 15.0;
+        } else {
+            tax = 0.0;
         }
     }
 
@@ -517,6 +525,25 @@ public class Menu extends javax.swing.JFrame {
         jTextFieldTax.setText(String.valueOf(String.format("%.2f", tax)));
         jTextFieldSubTotal.setText(String.valueOf(String.format("%.2f", total)));
         jTextFieldTotal.setText(String.valueOf(String.format("%.2f", (total + tax))));
+    }
+
+    public boolean alreadyInReceipt(String productName) {
+        boolean alreadyInCart = false;
+        for (String products : cartItems.keySet()) {
+            if (products.equals(productName)) {
+                alreadyInCart = true;
+            }
+        }
+
+        return alreadyInCart;
+    }
+
+    public boolean hasTwoTabsBetweenItemAndQuantity(String item) {
+        int firstTabIndex = item.indexOf("\t"); // index of first tab character
+        int secondTabIndex = item.indexOf("\t", firstTabIndex + 1); // index of second tab character
+        int quantityIndex = item.indexOf("\t", secondTabIndex + 1); // index of tab character before the quantity
+        String itemDetails = item.substring(firstTabIndex + 1, secondTabIndex); // substring after the first tab character and before the second tab character
+        return quantityIndex - secondTabIndex == 2 && itemDetails.isEmpty();
     }
 
     public void decrementStocks(String productName, int qty) {
@@ -562,6 +589,45 @@ public class Menu extends javax.swing.JFrame {
         }
     }
 
+    public void incrementStocks(String productName, int qty) {
+        // mysql connection
+        int currentStock = 0;
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        // get current stock of product first in database
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select stock from products where `Product Name`=" + "'" + productName + "'");
+
+            while (result.next()) {
+                currentStock = result.getInt(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        // then increment based on the current stock and quantity.
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+            stm.executeUpdate("update products set `Stock`=" + "'" + (currentStock + qty) + "' where `Product Name`=" + "'" + productName + "'");
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     public boolean isThereStock(String productName, int qty) {
         // mysql connection
         int currentStock = 0;
@@ -586,7 +652,7 @@ public class Menu extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         return currentStock > 0;
     }
 
@@ -620,6 +686,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel16 = new javax.swing.JLabel();
         jLabel66 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabelimage1 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -631,6 +698,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox2 = new javax.swing.JCheckBox();
         jLabel22 = new javax.swing.JLabel();
         jLabel67 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabelimage2 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -642,6 +710,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox3 = new javax.swing.JCheckBox();
         jLabel28 = new javax.swing.JLabel();
         jLabel68 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabelimage3 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
@@ -653,6 +722,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox4 = new javax.swing.JCheckBox();
         jLabel34 = new javax.swing.JLabel();
         jLabel69 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jLabelimage4 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
@@ -664,6 +734,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox5 = new javax.swing.JCheckBox();
         jLabel40 = new javax.swing.JLabel();
         jLabel70 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jLabelimage5 = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
@@ -675,6 +746,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox6 = new javax.swing.JCheckBox();
         jLabel46 = new javax.swing.JLabel();
         jLabel75 = new javax.swing.JLabel();
+        jButton10 = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jLabelimage6 = new javax.swing.JLabel();
         jLabel41 = new javax.swing.JLabel();
@@ -686,6 +758,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox7 = new javax.swing.JCheckBox();
         jLabel52 = new javax.swing.JLabel();
         jLabel74 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         jLabelimage7 = new javax.swing.JLabel();
         jLabel47 = new javax.swing.JLabel();
@@ -697,6 +770,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox8 = new javax.swing.JCheckBox();
         jLabel58 = new javax.swing.JLabel();
         jLabel73 = new javax.swing.JLabel();
+        jButton8 = new javax.swing.JButton();
         jPanel12 = new javax.swing.JPanel();
         jLabelimage8 = new javax.swing.JLabel();
         jLabel53 = new javax.swing.JLabel();
@@ -708,6 +782,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox9 = new javax.swing.JCheckBox();
         jLabel64 = new javax.swing.JLabel();
         jLabel72 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
         jPanel13 = new javax.swing.JPanel();
         jLabelimage9 = new javax.swing.JLabel();
         jLabel59 = new javax.swing.JLabel();
@@ -719,6 +794,7 @@ public class Menu extends javax.swing.JFrame {
         jCheckBox10 = new javax.swing.JCheckBox();
         jLabel65 = new javax.swing.JLabel();
         jLabel71 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         cartWindow = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         btnTotal = new javax.swing.JButton();
@@ -733,6 +809,10 @@ public class Menu extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        jLabel76 = new javax.swing.JLabel();
+        jLabel77 = new javax.swing.JLabel();
+        edtPayment = new javax.swing.JTextField();
+        edtChange = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         sidebarHome = new javax.swing.JLabel();
         sidebarCart = new javax.swing.JLabel();
@@ -858,6 +938,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel66.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel66.setName(""); // NOI18N
 
+        jButton1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton1.setText("Remove");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -886,7 +974,11 @@ public class Menu extends javax.swing.JFrame {
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 18, Short.MAX_VALUE))))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jButton1)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -910,6 +1002,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(jLabel66, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -947,6 +1041,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel67.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel67.setName(""); // NOI18N
 
+        jButton2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton2.setText("Remove");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -960,12 +1062,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel22)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel22))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -974,6 +1075,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel67, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(46, 46, 46))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -997,7 +1102,9 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel22)
                     .addComponent(jLabel67, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addGap(0, 31, Short.MAX_VALUE))
         );
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -1034,6 +1141,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel68.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel68.setName(""); // NOI18N
 
+        jButton3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton3.setText("Remove");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -1047,12 +1162,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel28)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel28))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1061,6 +1175,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel68, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jButton3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1084,6 +1202,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel28)
                     .addComponent(jLabel68, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1121,6 +1241,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel69.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel69.setName(""); // NOI18N
 
+        jButton4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton4.setText("Remove");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -1134,12 +1262,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel34)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel34))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1148,6 +1275,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel69, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addGap(45, 45, 45))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1171,6 +1302,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel34)
                     .addComponent(jLabel69, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1189,7 +1322,6 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel32.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel32.setText("Mineral Water");
 
         jLabel33.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
 
@@ -1209,6 +1341,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel70.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel70.setName(""); // NOI18N
 
+        jButton5.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton5.setText("Remove");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -1222,12 +1362,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel31, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel40)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel31, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel40))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1236,6 +1375,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel70, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(jButton5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1259,7 +1402,9 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel40)
                     .addComponent(jLabel70, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton5)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
@@ -1296,6 +1441,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel75.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel75.setName(""); // NOI18N
 
+        jButton10.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton10.setText("Remove");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -1309,12 +1462,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel36, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel37, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel46)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel36, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel37, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel46))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1323,6 +1475,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jButton10)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1346,6 +1502,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel46)
                     .addComponent(jLabel75, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton10)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1383,6 +1541,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel74.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel74.setName(""); // NOI18N
 
+        jButton9.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton9.setText("Remove");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -1396,12 +1562,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel41, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel42, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel43, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jLabel52)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel42, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel43, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel52))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1410,6 +1575,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel74, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(jButton9)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1433,6 +1602,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel52)
                     .addComponent(jLabel74, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1470,6 +1641,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel73.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel73.setName(""); // NOI18N
 
+        jButton8.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton8.setText("Remove");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
@@ -1483,12 +1662,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel47, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel48, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel49, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(jLabel58)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel48, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel49, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel58))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1497,6 +1675,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel73, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(jButton8)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1520,6 +1702,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel58)
                     .addComponent(jLabel73, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton8)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1557,6 +1741,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel72.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel72.setName(""); // NOI18N
 
+        jButton7.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton7.setText("Remove");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
@@ -1570,12 +1762,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel53, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel55, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addComponent(jLabel64)
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel55, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel64))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1584,6 +1775,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel72, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton7)
+                .addGap(47, 47, 47))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1607,7 +1802,9 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel64)
                     .addComponent(jLabel72, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 55, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7)
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         jPanel13.setBackground(new java.awt.Color(255, 255, 255));
@@ -1644,6 +1841,14 @@ public class Menu extends javax.swing.JFrame {
         jLabel71.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jLabel71.setName(""); // NOI18N
 
+        jButton6.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton6.setText("Remove");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
@@ -1657,12 +1862,11 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jLabel59, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addGap(38, 38, 38))
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel60, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel61, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel65)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel60, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel61, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                            .addComponent(jLabel65))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1671,6 +1875,10 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(jSpinner10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel71, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton6)
+                .addGap(47, 47, 47))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1694,6 +1902,8 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel65)
                     .addComponent(jLabel71, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1835,6 +2045,11 @@ public class Menu extends javax.swing.JFrame {
         jTextFieldTotal.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         jTextFieldTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextFieldTotal.setText("0.0");
+        jTextFieldTotal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldTotalActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -1848,6 +2063,28 @@ public class Menu extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("Total (₱)");
 
+        jLabel76.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
+        jLabel76.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel76.setText("Pay");
+
+        jLabel77.setFont(new java.awt.Font("Calibri", 1, 20)); // NOI18N
+        jLabel77.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel77.setText("Change");
+
+        edtPayment.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        edtPayment.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        edtPayment.setText("0.0");
+        edtPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edtPaymentActionPerformed(evt);
+            }
+        });
+
+        edtChange.setEditable(false);
+        edtChange.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        edtChange.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        edtChange.setText("0.0");
+
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
@@ -1855,29 +2092,49 @@ public class Menu extends javax.swing.JFrame {
             .addComponent(jScrollPane1)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 645, Short.MAX_VALUE)
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldTax, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39))
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldTax, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel15Layout.createSequentialGroup()
+                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel10))
+                        .addGap(64, 64, 64)
+                        .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addComponent(jLabel76)
+                        .addGap(58, 58, 58)
+                        .addComponent(edtPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addComponent(jLabel77)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(edtChange, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(367, Short.MAX_VALUE))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldTax, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel76)
+                    .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextFieldTax, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(edtPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel77)
+                    .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextFieldSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)
+                        .addComponent(edtChange, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1899,14 +2156,14 @@ public class Menu extends javax.swing.JFrame {
         );
         cartWindowLayout.setVerticalGroup(
             cartWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 643, Short.MAX_VALUE)
+            .addGap(0, 646, Short.MAX_VALUE)
             .addGroup(cartWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(cartWindowLayout.createSequentialGroup()
                     .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 71, Short.MAX_VALUE)))
             .addGroup(cartWindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cartWindowLayout.createSequentialGroup()
-                    .addGap(0, 575, Short.MAX_VALUE)
+                    .addGap(0, 578, Short.MAX_VALUE)
                     .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
@@ -2054,17 +2311,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel14.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel14.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox2.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel14.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel14.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel14.getText(), x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel14.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel14.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel14.getText() + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox2.setSelected(false);
@@ -2078,17 +2341,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel20.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel20.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox3.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel20.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel20.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel20.getText(), x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel20.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel20.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel20.getText() + "\t\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox3.setSelected(false);
@@ -2102,17 +2371,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel26.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel26.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox4.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel26.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel26.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel26.getText(), x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel26.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel26.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel26.getText() + "\t\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox4.setSelected(false);
@@ -2126,17 +2401,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel32.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel32.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox5.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel32.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel32.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel32.getText(), x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel32.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel32.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel32.getText() + "\t\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox5.setSelected(false);
@@ -2150,17 +2431,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel38.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel38.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox6.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel38.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel38.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel38.getText(), x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel38.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel38.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel38.getText() + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox6.setSelected(false);
@@ -2174,17 +2461,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel44.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel44.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox7.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel44.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel44.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel44.getText(), x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel44.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel44.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel44.getText() + "\t\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox7.setSelected(false);
@@ -2198,17 +2491,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel50.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel50.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox8.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel50.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel50.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel50.getText(), x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel50.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel50.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel50.getText() + "\t\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox8.setSelected(false);
@@ -2222,17 +2521,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel56.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel56.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox9.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel56.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel56.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel56.getText(), x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel56.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel56.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel56.getText() + "\t\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox9.setSelected(false);
@@ -2244,13 +2549,24 @@ public class Menu extends javax.swing.JFrame {
         if (total == 0.0) {
             JOptionPane.showMessageDialog(null, "You haven't selected any item.");
         } else {
-            jTextArea1.setText(jTextArea1.getText()
-                    + "\n**********************************************************************\n"
-                    + "Tax: \t\t\t" + tax + "\n"
-                    + "Sub Total: \t\t\t" + total + "\n"
-                    + "Total: \t\t\t" + (total + tax) + "\n"
-                    + "*****************************Thank You******************************");
-            btnTotal.setEnabled(false);
+            double payment = Double.parseDouble(edtPayment.getText());
+            if (payment >= Double.parseDouble(jTextFieldTotal.getText())) {
+                double change = payment - Double.parseDouble(jTextFieldTotal.getText());
+                edtChange.setText(String.valueOf(String.format("%.2f", change)));
+                edtPayment.setEditable(false);
+                jTextArea1.setText(jTextArea1.getText()
+                        + "\n**********************************************************************\n"
+                        + "Amount Paid: \t\t\t" + payment + "\n"
+                        + "Change: \t\t\t" + change + "\n"
+                        + "\n**********************************************************************\n"
+                        + "Tax: \t\t\t" + tax + "\n"
+                        + "Sub Total: \t\t\t" + total + "\n"
+                        + "Total: \t\t\t" + (total + tax) + "\n"
+                        + "*****************************Thank You******************************");
+                btnTotal.setEnabled(false);
+            } else {
+                JOptionPane.showMessageDialog(null, "Insufficient amount of money!");
+            }
         }
     }//GEN-LAST:event_btnTotalActionPerformed
 
@@ -2295,17 +2611,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel8.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel8.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox1.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel8.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel8.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel8.getText(), x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel8.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel8.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel8.getText() + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox1.setSelected(false);
@@ -2319,17 +2641,23 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel62.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                x++;
-                if (x == 1) {
-                    moonbucks();
+                if (alreadyInReceipt(jLabel62.getText())) {
+                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                    jCheckBox10.setSelected(false);
+                } else {
+                    x++;
+                    if (x == 1) {
+                        moonbucks();
+                    }
+                    decrementStocks(jLabel62.getText(), qty);
+                    setStocks();
+                    double price = qty * getPriceDB(jLabel62.getText());
+                    total += price;
+                    getTax(total);
+                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    cartItems.put(jLabel62.getText(), x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                    dudate();
                 }
-                decrementStocks(jLabel62.getText(), qty);
-                setStocks();
-                double price = qty * getPriceDB(jLabel62.getText());
-                total += price;
-                getTax(total);
-                jTextArea1.setText(jTextArea1.getText() + qty + "\t" + jLabel62.getText() + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                dudate();
             }
         } else {
             jCheckBox10.setSelected(false);
@@ -2383,6 +2711,534 @@ public class Menu extends javax.swing.JFrame {
         this.setLocation(x - xx, y - xy);
     }//GEN-LAST:event_formMouseDragged
 
+    private void jTextFieldTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTotalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTotalActionPerformed
+
+    private void edtPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtPaymentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_edtPaymentActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel8.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox1.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel14.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox2.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel20.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox3.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel26.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox4.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel32.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox5.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel62.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox10.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel56.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox9.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel50.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox8.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel44.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox7.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        String productName = jLabel38.getText();
+        String selectedItem = cartItems.get(productName);
+        if (selectedItem != null) {
+            int qty = 0;
+            double price = 0.0;
+            if (hasTwoTabsBetweenItemAndQuantity(selectedItem)) {
+                String[] twoTabs = selectedItem.split("\t\t");
+                String s = twoTabs[1];
+                qty = Integer.parseInt(s.substring(0, s.indexOf("\t")));
+                price = Double.parseDouble(s.substring(s.lastIndexOf("\t") + 1));
+            } else {
+                String[] parts = selectedItem.split("\t");
+                qty = Integer.parseInt(parts[1]);
+                price = Double.parseDouble(parts[3]);
+            }
+            int xValue = Integer.parseInt(selectedItem.charAt(0) + "");
+            // Get the selected text from the cart
+            jTextArea1.setText(jTextArea1.getText().replaceAll(selectedItem, ""));
+            // Remove the selected item from the cartItems HashMap
+            incrementStocks(productName, qty);
+            setStocks();
+            cartItems.remove(productName);
+            x--;
+            total -= price;
+            getTax(total);
+            dudate();
+            jCheckBox6.setSelected(false);
+            // Decrement the x value for all items in the cartItems HashMap that have a value greater than the x value of the removed item
+            for (String key : cartItems.keySet()) {
+                String value = cartItems.get(key);
+                int currentValue = Integer.parseInt(value.charAt(0) + "");
+                if (currentValue > xValue) {
+                    int newValue = currentValue - 1;
+                    String updatedValue = newValue + value.substring(value.indexOf("."), value.length());
+                    cartItems.put(key, updatedValue);
+                }
+            }
+
+            // Update the jTextArea1 with the updated cart
+            String cartString = "";
+            int i = 1;
+            for (String value : cartItems.values()) {
+                cartString += value.replaceFirst("\\d+", String.valueOf(i));
+                i++;
+            }
+            moonbucks();
+            jTextArea1.setText(jTextArea1.getText() + cartString);
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2423,8 +3279,20 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnTotal;
     private javax.swing.JPanel cartWindow;
+    private javax.swing.JTextField edtChange;
+    private javax.swing.JTextField edtPayment;
     private javax.swing.JLabel exitButton;
     private javax.swing.Box.Filler filler1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox10;
     private javax.swing.JCheckBox jCheckBox2;
@@ -2508,6 +3376,8 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel73;
     private javax.swing.JLabel jLabel74;
     private javax.swing.JLabel jLabel75;
+    private javax.swing.JLabel jLabel76;
+    private javax.swing.JLabel jLabel77;
     public static javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelimage;
