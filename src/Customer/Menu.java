@@ -538,12 +538,21 @@ public class Menu extends javax.swing.JFrame {
         return alreadyInCart;
     }
 
-    public boolean hasTwoTabsBetweenItemAndQuantity(String item) {
+    public static boolean hasTwoTabsBetweenItemAndQuantity(String item) {
         int firstTabIndex = item.indexOf("\t"); // index of first tab character
         int secondTabIndex = item.indexOf("\t", firstTabIndex + 1); // index of second tab character
         int quantityIndex = item.indexOf("\t", secondTabIndex + 1); // index of tab character before the quantity
+    
+        if (quantityIndex == -1) {
+            // There is no second tab character, so the quantity is missing
+            return false;
+        }
+    
         String itemDetails = item.substring(firstTabIndex + 1, secondTabIndex); // substring after the first tab character and before the second tab character
-        return quantityIndex - secondTabIndex == 2 && itemDetails.isEmpty();
+        String quantity = item.substring(secondTabIndex + 1, quantityIndex); // substring between the second tab character and the quantity
+    
+        // Check if the item details are empty and there are at least two tabs between the item and the quantity
+        return itemDetails.isEmpty() && quantity.matches("\\d+"); // using regex to check if the quantity is a valid positive number
     }
 
     public void decrementStocks(String productName, int qty) {
@@ -584,9 +593,37 @@ public class Menu extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.out.println(e);
             }
-        } else if (qty > currentStock) {
-            JOptionPane.showMessageDialog(this, "Please decrease quantity!");
         }
+    }
+
+    public boolean qtyNotGreaterThanStock(String productName, int qty) {
+        // mysql connection
+        int currentStock = 0;
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        // get current stock of product first in database
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select stock from products where `Product Name`=" + "'" + productName + "'");
+
+            while (result.next()) {
+                currentStock = result.getInt(1);
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        if (qty > currentStock) {
+            return false;
+        }
+        return true;
     }
 
     public void incrementStocks(String productName, int qty) {
@@ -2084,6 +2121,11 @@ public class Menu extends javax.swing.JFrame {
         edtChange.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         edtChange.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         edtChange.setText("0.0");
+        edtChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edtChangeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -2311,22 +2353,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel14.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel14.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox2.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel14.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox2.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel14.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel14.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel14.getText(), x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel14.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel14.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel14.getText(), x + ". " + jLabel14.getText() + "\t" + qty + "\t" + getPriceDB(jLabel14.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2341,22 +2387,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel20.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel20.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox3.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel20.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox3.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel20.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel20.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel20.getText(), x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel20.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel20.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel20.getText(), x + ". " + jLabel20.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel20.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2371,22 +2421,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel26.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel26.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox4.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel26.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox4.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel26.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel26.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel26.getText(), x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel26.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel26.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel26.getText(), x + ". " + jLabel26.getText() + "\t" + qty + "\t" + getPriceDB(jLabel26.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2401,22 +2455,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel32.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel32.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox5.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel32.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox5.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel32.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel32.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel32.getText(), x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel32.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel32.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel32.getText(), x + ". " + jLabel32.getText() + "\t" + qty + "\t" + getPriceDB(jLabel32.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2431,22 +2489,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel38.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel38.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox6.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel38.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox6.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel38.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel38.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel38.getText(), x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel38.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel38.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel38.getText(), x + ". " + jLabel38.getText() + "\t" + qty + "\t" + getPriceDB(jLabel38.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2461,22 +2523,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel44.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel44.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox7.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel44.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox7.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel44.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel44.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel44.getText(), x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel44.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel44.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel44.getText(), x + ". " + jLabel44.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel44.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2491,22 +2557,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel50.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel50.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox8.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel50.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox8.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel50.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel50.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel50.getText(), x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel50.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel50.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel50.getText(), x + ". " + jLabel50.getText() + "\t" + qty + "\t" + getPriceDB(jLabel50.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2521,22 +2591,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel56.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel56.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox9.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel56.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox9.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel56.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel56.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel56.getText(), x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel56.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel56.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel56.getText(), x + ". " + jLabel56.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel56.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2611,22 +2685,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel8.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel8.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox1.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel8.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox1.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel8.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel8.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel8.getText(), x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel8.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel8.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel8.getText(), x + ". " + jLabel8.getText() + "\t" + qty + "\t" + getPriceDB(jLabel8.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2641,22 +2719,26 @@ public class Menu extends javax.swing.JFrame {
             if (!isThereStock(jLabel62.getText(), qty)) {
                 JOptionPane.showMessageDialog(this, "Out of stock!");
             } else {
-                if (alreadyInReceipt(jLabel62.getText())) {
-                    JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
-                    jCheckBox10.setSelected(false);
-                } else {
-                    x++;
-                    if (x == 1) {
-                        moonbucks();
+                if (qtyNotGreaterThanStock(jLabel8.getText(), qty)) {
+                    if (alreadyInReceipt(jLabel62.getText())) {
+                        JOptionPane.showMessageDialog(this, "This product is already at the receipt!");
+                        jCheckBox10.setSelected(false);
+                    } else {
+                        x++;
+                        if (x == 1) {
+                            moonbucks();
+                        }
+                        decrementStocks(jLabel62.getText(), qty);
+                        setStocks();
+                        double price = qty * getPriceDB(jLabel62.getText());
+                        total += price;
+                        getTax(total);
+                        jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        cartItems.put(jLabel62.getText(), x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
+                        dudate();
                     }
-                    decrementStocks(jLabel62.getText(), qty);
-                    setStocks();
-                    double price = qty * getPriceDB(jLabel62.getText());
-                    total += price;
-                    getTax(total);
-                    jTextArea1.setText(jTextArea1.getText() + x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    cartItems.put(jLabel62.getText(), x + ". " + jLabel62.getText() + "\t\t" + qty + "\t" + getPriceDB(jLabel62.getText()) + "\t" + String.format("%.2f", price) + "\n");
-                    dudate();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please decrease quantity!");
                 }
             }
         } else {
@@ -2768,6 +2850,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -2820,6 +2904,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -2872,6 +2958,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -2924,6 +3012,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -2976,6 +3066,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -3028,6 +3120,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -3080,6 +3174,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
@@ -3132,6 +3228,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
@@ -3184,6 +3282,8 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -3236,8 +3336,14 @@ public class Menu extends javax.swing.JFrame {
             }
             moonbucks();
             jTextArea1.setText(jTextArea1.getText() + cartString);
+        } else {
+            JOptionPane.showMessageDialog(this, "This product is not yet on receipt!");
         }
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void edtChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edtChangeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_edtChangeActionPerformed
 
     /**
      * @param args the command line arguments
