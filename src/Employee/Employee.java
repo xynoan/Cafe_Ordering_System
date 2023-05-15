@@ -36,11 +36,39 @@ public class Employee extends javax.swing.JFrame {
         init();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(getProductNames()));
     }
 
     public void init() {
         SidebarIconSetter();
         setTime();
+    }
+
+    public static String[] getProductNames() {
+        ArrayList<String> al = new ArrayList<>();
+        // mysql connection
+        String url = "jdbc:mysql://localhost:3306/cafe";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, username, password);
+
+            Statement stm = con.createStatement();
+
+            ResultSet result = stm.executeQuery("select * from products");
+
+            while (result.next()) {
+                al.add(result.getString(1));
+            }
+
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        String[] productNames = al.toArray(new String[al.size()]);
+        return productNames;
     }
 
     public void SidebarIconSetter() {
@@ -238,7 +266,9 @@ public class Employee extends javax.swing.JFrame {
         removeButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        stockButton = new javax.swing.JButton();
         stockField = new javax.swing.JSpinner();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -398,6 +428,20 @@ public class Employee extends javax.swing.JFrame {
             }
         });
 
+        stockButton.setBackground(new java.awt.Color(98, 66, 57));
+        stockButton.setForeground(new java.awt.Color(255, 255, 255));
+        stockButton.setText("Update Stock");
+        stockButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                stockButtonMouseClicked(evt);
+            }
+        });
+        stockButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stockButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -408,7 +452,8 @@ public class Employee extends javax.swing.JFrame {
                     .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(removeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(stockButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(26, 26, 26))
         );
         jPanel6Layout.setVerticalGroup(
@@ -416,17 +461,27 @@ public class Employee extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(addButton)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removeButton)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(updateButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(stockButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap())
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         stockField.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         stockField.setToolTipText("");
+
+        jComboBox1.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cold Coffee", "Cappuccino Coffee", " " }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -444,7 +499,8 @@ public class Employee extends javax.swing.JFrame {
                     .addComponent(imageField, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                     .addComponent(nameField)
                     .addComponent(priceField)
-                    .addComponent(stockField))
+                    .addComponent(stockField)
+                    .addComponent(jComboBox1, 0, 239, Short.MAX_VALUE))
                 .addGap(33, 33, 33)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
@@ -453,13 +509,14 @@ public class Employee extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -470,7 +527,8 @@ public class Employee extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(imageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(imageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -558,11 +616,6 @@ public class Employee extends javax.swing.JFrame {
         } else if (priceField.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the price!");
         } else {
-            Pattern pattern = Pattern.compile("\\d+\\w+|\\w+\\d+");
-            Matcher matcher = pattern.matcher(nameField.getText());
-            if (matcher.matches()) {
-                JOptionPane.showMessageDialog(this, "The product name can't have numbers!");
-            }
             boolean isDouble = false;
             try {
                 Double.parseDouble(priceField.getText());
@@ -572,7 +625,7 @@ public class Employee extends javax.swing.JFrame {
                 isDouble = false;
             }
 
-            if (!matcher.matches() && isDouble) {
+            if (isDouble) {
                 // mysql connection
                 String url = "jdbc:mysql://localhost:3306/cafe";
                 String username = "root";
@@ -640,6 +693,45 @@ public class Employee extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_removeButtonActionPerformed
 
+    private void stockButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stockButtonMouseClicked
+        // TODO add your handling code here:
+        if (nameField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the product name!");
+        } else {
+            // mysql connection
+            String url = "jdbc:mysql://localhost:3306/cafe";
+            String username = "root";
+            String password = "";
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                Connection con = DriverManager.getConnection(url, username, password);
+
+                Statement stm = con.createStatement();
+                if (productAlreadyExists(nameField.getText())) {
+                    // UPDATE `products` SET `Price`='20' WHERE `Product Name` ='Cold Coffee'
+                    stm.executeUpdate("UPDATE `products` SET `Stock`=" + "'" + stockField.getValue() + "'" + " WHERE `Product Name`=" + "'" + nameField.getText() + "'");
+                    JOptionPane.showMessageDialog(this, "Product Stock is updated!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "That product doesn't exist!");
+                }
+                con.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }//GEN-LAST:event_stockButtonMouseClicked
+
+    private void stockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stockButtonActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        String selectedOption = jComboBox1.getSelectedItem().toString();
+        nameField.setText(selectedOption);
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -681,6 +773,7 @@ public class Employee extends javax.swing.JFrame {
     private javax.swing.JFileChooser fileSelector;
     private javax.swing.JTextField imageField;
     private javax.swing.JButton jButton1;
+    public javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -697,6 +790,7 @@ public class Employee extends javax.swing.JFrame {
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField priceField;
     private javax.swing.JButton removeButton;
+    private javax.swing.JButton stockButton;
     private javax.swing.JSpinner stockField;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
