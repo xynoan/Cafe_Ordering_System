@@ -122,7 +122,7 @@ public class SignupOption extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Customer");
+        jButton2.setText("Cashier");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

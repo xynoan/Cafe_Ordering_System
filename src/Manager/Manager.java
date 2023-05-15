@@ -52,7 +52,7 @@ public class Manager extends javax.swing.JFrame {
             Statement statement = connect.createStatement();
             ResultSet result = statement.executeQuery("SELECT * FROM employees");
             while (result.next()) {
-                Object[] employeeRow = {result.getString("username")};
+                Object[] employeeRow = {result.getString("username"), result.getString("address"), result.getString("contact")};
                 defaultTableModel.addRow(employeeRow);
             }
         } catch (Exception e) {
@@ -82,14 +82,14 @@ public class Manager extends javax.swing.JFrame {
                 if (Login.employeesAcc.get(edtUsername.getText()) != null) {
                     JOptionPane.showMessageDialog(this, "That user is already an employee!");
                 } else {
-                    int rowsEdited = stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "')");
+                    int rowsEdited = stm.executeUpdate("insert into employees values ('" + edtUsername.getText() + "', '" + edtPassword.getText() + "', '" + "" +  "', '" + "0" + "')");
                     if (rowsEdited > 0) {
                         DefaultTableModel model = (DefaultTableModel) employeeTable.getModel();
                         model.setRowCount(0);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery("Select * from employees");
                         while (rs.next()) {
-                            Object[] row = {rs.getString("username")};
+                            Object[] row = {rs.getString("username"), rs.getString("address"), rs.getString("contact")};
                             model.addRow(row);
                         }
                         Login.employeesAcc.put(edtUsername.getText(), edtPassword.getText());
@@ -141,7 +141,7 @@ public class Manager extends javax.swing.JFrame {
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery("Select * from employees");
                         while (rs.next()) {
-                            Object[] row = {rs.getString("username")};
+                            Object[] row = {rs.getString("username"), rs.getString("address"), rs.getString("contact")};
                             model.addRow(row);
                         }
 
@@ -496,6 +496,11 @@ public class Manager extends javax.swing.JFrame {
                 addButtonMouseClicked(evt);
             }
         });
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         jButton1.setBackground(new java.awt.Color(98, 66, 57));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -548,20 +553,20 @@ public class Manager extends javax.swing.JFrame {
 
         employeeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Username"
+                "Username", "Address", "Contact"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -580,6 +585,8 @@ public class Manager extends javax.swing.JFrame {
         jScrollPane3.setViewportView(employeeTable);
         if (employeeTable.getColumnModel().getColumnCount() > 0) {
             employeeTable.getColumnModel().getColumn(0).setResizable(false);
+            employeeTable.getColumnModel().getColumn(1).setResizable(false);
+            employeeTable.getColumnModel().getColumn(2).setResizable(false);
         }
 
         javax.swing.GroupLayout viewEmployeeLayout = new javax.swing.GroupLayout(viewEmployee);
@@ -943,6 +950,10 @@ public class Manager extends javax.swing.JFrame {
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addButtonActionPerformed
 
     /**
      * @param args the command line arguments
