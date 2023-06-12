@@ -6,8 +6,6 @@
 2.	Alinas, Toni Shamiah
 3.	Morva, Nathaniel Carlo
 4.	Vista, Valentino
-
-Click [here](https://drive.google.com/file/d/1X4p7M2XOxPNeA2OGb5OxRVhtQIhaK4Dy/view?usp=sharing) for the link of the database.
 ## Description of the Proposed Software/System:
 Café ordering system is used for maintaining the details, products, billing, and maintains an inventory for the Café. This project is developed using Java, MySQL, and JFrame. The project has 3 accounts: Cashier, Employee, and Manager.
 ## Objectives:
